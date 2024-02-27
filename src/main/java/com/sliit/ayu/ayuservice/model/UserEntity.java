@@ -26,7 +26,7 @@ public class UserEntity {
     @Column(name ="last_name")
     private String lastName;
 
-    @Column(name ="employee_number")
+    @Column(name ="employee_number",unique = true)
     private String employeeNumber;
 
     @Column(name ="designation")
@@ -44,6 +44,12 @@ public class UserEntity {
     @Column(name = "updated_date", columnDefinition = "TIMESTAMP")
     private Date updatedDate;
 
+    @Column(unique = true ,nullable = false)
+    private String username;
+
+    @Column(nullable = false)
+    private String password;
+
     public UserDTO toDTO() {
         UserDTO userDTO = new UserDTO();
         userDTO.setId(this.id);
@@ -55,6 +61,7 @@ public class UserEntity {
         userDTO.setDepartmentId(this.departmentId);
         userDTO.setCreatedDate(this.createdDate);
         userDTO.setUpdatedDate(this.updatedDate);
+        userDTO.setUsername(this.username);
         return userDTO;
     }
 }
