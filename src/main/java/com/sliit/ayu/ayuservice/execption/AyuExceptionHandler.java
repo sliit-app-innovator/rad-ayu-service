@@ -44,4 +44,11 @@ public class AyuExceptionHandler {
         AyuException response = AyuException.builder().errorCode("ERROR_CODE").errorMessage("ERROR_MESSAGE").build();
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
     }
+
+    @ExceptionHandler({AyuException.class})
+    public ResponseEntity<AyuError> handleDbError(AyuException ex) {
+        //generate error message
+        AyuError response = new AyuError(ex.getErrorCode(), ex.getErrorMessage());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+    }
 }

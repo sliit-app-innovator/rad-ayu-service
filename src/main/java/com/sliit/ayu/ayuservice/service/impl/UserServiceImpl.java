@@ -2,14 +2,15 @@ package com.sliit.ayu.ayuservice.service.impl;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sliit.ayu.ayuservice.dto.UserDTO;
+import com.sliit.ayu.ayuservice.dto.UserUpdateDTO;
+import com.sliit.ayu.ayuservice.execption.AyuException;
 import com.sliit.ayu.ayuservice.model.UserEntity;
 import com.sliit.ayu.ayuservice.repository.UserRepository;
 import com.sliit.ayu.ayuservice.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Calendar;
-import java.util.List;
+import java.util.*;
 
 @Service
 public class UserServiceImpl implements UserService  {
@@ -31,21 +32,68 @@ public class UserServiceImpl implements UserService  {
 
     @Override
     public List<UserDTO> searchUser(String name) {
-        return null;
+        List<UserDTO> entityList = new ArrayList<>();
+        if (name == null || name.isEmpty()) {
+           userRepository.findAll().forEach(userEntity -> entityList.add(userEntity.toDTO()));
+        } else {
+            userRepository.findByFirstNameOrLastName(name, name).forEach(userEntity -> entityList.add(userEntity.toDTO()));
+        }
+        return entityList;
     }
 
     @Override
     public UserDTO getUser(int id) {
-        return null;
+        Optional<UserEntity> optional = userRepository.findById(id);
+        if(optional.isPresent()){
+            return optional.get().toDTO();
+        } else {
+           throw AyuException.builder().errorCode("AU001").errorMessage("User cannot be found").build();
+        }
     }
 
     @Override
-    public UserDTO updateUser(UserDTO userDTO) {
-        return null;
+    public UserDTO updateUser(UserUpdateDTO userDTO) {
+        Optional<UserEntity> optional = userRepository.findById(userDTO.getId());
+        if (optional.isPresent()) {
+            UserEntity userEntity = optional.get();
+            if (userDTO.getFirstName() != null && !userDTO.getFirstName().isEmpty()) {
+                userEntity.setFirstName(userDTO.getFirstName());
+            }
+            if (userDTO.getLastName() != null && !userDTO.getLastName().isEmpty()) {
+                userEntity.setLastName(userDTO.getLastName());
+            }
+            if (userDTO.getTitle() != null && !userDTO.getTitle().isEmpty()) {
+                userEntity.setTitle(userDTO.getTitle());
+            }
+            if (userDTO.getDesignation() != null && !userDTO.getDesignation().isEmpty()) {
+                userEntity.setDesignation(userDTO.getDesignation());
+            }
+            if (userDTO.getEmployeeNumber() != null && !userDTO.getEmployeeNumber().isEmpty()) {
+                userEntity.setEmployeeNumber(userDTO.getEmployeeNumber());
+            }
+            if (userDTO.getUserRole() != null && !userDTO.getUserRole().isEmpty()) {
+                userEntity.setUserRole(userDTO.getUserRole());
+            }
+            userEntity.setUpdatedDate(new Date());
+            userRepository.save(userEntity);
+            optional = userRepository.findById(userDTO.getId());
+            if (optional.isPresent()) {
+                return optional.get().toDTO();
+            } else {
+                throw AyuException.builder().errorCode("AU001").errorMessage("User cannot be found").build();
+            }
+        } else {
+            throw AyuException.builder().errorCode("AU001").errorMessage("User cannot be found").build();
+        }
     }
 
     @Override
     public void deleteUser(int id) {
-
+        Optional<UserEntity> optional = userRepository.findById(id);
+        if(optional.isPresent()){
+            userRepository.delete(optional.get());
+        } else {
+            throw AyuException.builder().errorCode("AYU001").errorMessage("User cannot be found").build();
+        }
     }
 }
