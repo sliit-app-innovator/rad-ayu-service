@@ -32,7 +32,7 @@ public class AyuExceptionHandler {
     }
 
     @ExceptionHandler({SQLIntegrityConstraintViolationException.class})
-    public ResponseEntity<AyuException> handleDbError(MethodArgumentNotValidException ex) {
+    public ResponseEntity<AyuException> handleSQLIntegrityError(MethodArgumentNotValidException ex) {
 
         List<String> errors = ex.getBindingResult()
                 .getFieldErrors()

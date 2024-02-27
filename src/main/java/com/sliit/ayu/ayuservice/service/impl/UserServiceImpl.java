@@ -15,11 +15,10 @@ import java.util.*;
 @Service
 public class UserServiceImpl implements UserService  {
 
+    public static final String AU_001 = "AU001";
+    public static final String USER_CANNOT_BE_FOUND = "User cannot be found";
     @Autowired
     private UserRepository userRepository;
-
-    @Autowired
-    private ObjectMapper ObjectMapper;
 
     @Override
     public UserDTO addUser(UserDTO userDTO) {
@@ -47,7 +46,7 @@ public class UserServiceImpl implements UserService  {
         if(optional.isPresent()){
             return optional.get().toDTO();
         } else {
-           throw AyuException.builder().errorCode("AU001").errorMessage("User cannot be found").build();
+           throw AyuException.builder().errorCode(AU_001).errorMessage(USER_CANNOT_BE_FOUND).build();
         }
     }
 
@@ -80,10 +79,10 @@ public class UserServiceImpl implements UserService  {
             if (optional.isPresent()) {
                 return optional.get().toDTO();
             } else {
-                throw AyuException.builder().errorCode("AU001").errorMessage("User cannot be found").build();
+                throw AyuException.builder().errorCode(AU_001).errorMessage(USER_CANNOT_BE_FOUND).build();
             }
         } else {
-            throw AyuException.builder().errorCode("AU001").errorMessage("User cannot be found").build();
+            throw AyuException.builder().errorCode(AU_001).errorMessage(USER_CANNOT_BE_FOUND).build();
         }
     }
 
@@ -93,7 +92,7 @@ public class UserServiceImpl implements UserService  {
         if(optional.isPresent()){
             userRepository.delete(optional.get());
         } else {
-            throw AyuException.builder().errorCode("AYU001").errorMessage("User cannot be found").build();
+            throw AyuException.builder().errorCode("AYU001").errorMessage(USER_CANNOT_BE_FOUND).build();
         }
     }
 }
