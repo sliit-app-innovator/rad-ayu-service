@@ -62,6 +62,8 @@ public class UserEntity {
         userDTO.setCreatedDate(this.createdDate);
         userDTO.setUpdatedDate(this.updatedDate);
         userDTO.setUsername(this.username);
+        userDTO.setEmployeeNumber(this.employeeNumber);
+        userDTO.setPassword(this.password);
         return userDTO;
     }
 }
