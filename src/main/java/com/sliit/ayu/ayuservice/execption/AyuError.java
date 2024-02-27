@@ -7,7 +7,7 @@ import lombok.Data;
 @Builder
 @Data
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class AyuException extends RuntimeException {
+public class AyuError {
     private String errorCode;
     private String errorMessage;
 }

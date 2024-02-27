@@ -32,7 +32,7 @@ public class AyuExceptionHandler {
     }
 
     @ExceptionHandler({SQLIntegrityConstraintViolationException.class})
-    public ResponseEntity<AyuException> handleDbError(MethodArgumentNotValidException ex) {
+    public ResponseEntity<AyuException> handleSQLIntegrityError(MethodArgumentNotValidException ex) {
 
         List<String> errors = ex.getBindingResult()
                 .getFieldErrors()
@@ -42,6 +42,13 @@ public class AyuExceptionHandler {
         log.error("Error occurred : {}", errors);
         //generate error message
         AyuException response = AyuException.builder().errorCode("ERROR_CODE").errorMessage("ERROR_MESSAGE").build();
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+    }
+
+    @ExceptionHandler({AyuException.class})
+    public ResponseEntity<AyuError> handleDbError(AyuException ex) {
+        //generate error message
+        AyuError response = new AyuError(ex.getErrorCode(), ex.getErrorMessage());
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
     }
 }
