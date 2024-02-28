@@ -54,7 +54,6 @@ public class UserDTO {
     @NotEmpty(message = "password cannot be null")
     private String password;
 
-    @JsonProperty("department_id")
     private  Integer departmentId;
 
     @JsonProperty("created_date")

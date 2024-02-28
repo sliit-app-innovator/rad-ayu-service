@@ -70,6 +70,10 @@ public class UserServiceImpl implements UserService  {
             if (userDTO.getEmployeeNumber() != null && !userDTO.getEmployeeNumber().isEmpty()) {
                 userEntity.setEmployeeNumber(userDTO.getEmployeeNumber());
             }
+            if (userDTO.getDepartmentId() != null && userDTO.getDepartmentId()!=0) {
+                userEntity.setDepartmentId(userDTO.getDepartmentId());
+            }
+
             if (userDTO.getUserRole() != null && !userDTO.getUserRole().isEmpty()) {
                 userEntity.setUserRole(userDTO.getUserRole());
             }

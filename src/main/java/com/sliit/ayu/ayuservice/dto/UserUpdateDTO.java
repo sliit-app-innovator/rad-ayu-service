@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.sliit.ayu.ayuservice.model.UserEntity;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
 
@@ -20,24 +21,29 @@ public class UserUpdateDTO {
     @NotEmpty(message = "title cannot be null")
     private String title;
 
-    @JsonProperty("first_name")
     @NotEmpty(message = "firstName cannot be null")
     private String firstName;
 
-    @JsonProperty("last_name")
     @NotEmpty(message = "lastName cannot be null")
     private String lastName;
 
-    @JsonProperty("employee_number")
     @NotEmpty(message = "employeeNumber cannot be null")
     private String employeeNumber;
 
     @NotEmpty(message = "designation cannot be null")
     private String designation;
 
-    @JsonProperty("user_role")
     @NotEmpty(message = "userRole cannot be null")
     private String userRole;
+
+    @NotNull(message = "username cannot be null")
+    @NotEmpty(message = "username cannot be null")
+    private String username;
+
+    @NotNull(message = "password cannot be null")
+    @NotEmpty(message = "password cannot be null")
+    private String password;
+
 
     private  Integer departmentId;
 
@@ -50,6 +56,8 @@ public class UserUpdateDTO {
         userEntity.setUserRole(this.userRole);
         userEntity.setDepartmentId(this.departmentId);
         userEntity.setEmployeeNumber(this.employeeNumber);
+        userEntity.setUsername(this.username);
+        userEntity.setPassword(this.password);
         return userEntity;
     }
 }

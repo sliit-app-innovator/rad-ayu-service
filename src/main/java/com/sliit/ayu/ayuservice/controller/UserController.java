@@ -15,8 +15,7 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
-@CrossOrigin(origins = "http://localhost:3000")
-@RequestMapping("/ayu/service/v1/user")
+@RequestMapping("/ayu/service/v1")
 @Slf4j
 public class UserController {
 
