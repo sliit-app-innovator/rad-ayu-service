@@ -1,5 +1,6 @@
 package com.sliit.ayu.ayuservice.repository;
 
+import com.sliit.ayu.ayuservice.dto.UserDTO;
 import com.sliit.ayu.ayuservice.model.UserEntity;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
@@ -23,4 +24,6 @@ public interface UserRepository extends CrudRepository<UserEntity, Integer>, Jpa
         @Transactional
         @Query(value =DbQuery.SEARCH_USER_BY_NAME_QUERY, nativeQuery = true)
         List<UserEntity> findByFirstNameOrLastName(String firstName, String lastName);
+
+        UserEntity findByUsername(String username);
 }
