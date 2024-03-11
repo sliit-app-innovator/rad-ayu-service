@@ -2,6 +2,7 @@ package com.sliit.ayu.ayuservice.service;
 
 import com.sliit.ayu.ayuservice.dto.UserDTO;
 import com.sliit.ayu.ayuservice.dto.UserUpdateDTO;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.List;
 

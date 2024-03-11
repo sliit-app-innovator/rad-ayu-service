@@ -8,6 +8,9 @@ import com.sliit.ayu.ayuservice.model.UserEntity;
 import com.sliit.ayu.ayuservice.repository.UserRepository;
 import com.sliit.ayu.ayuservice.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -15,6 +18,8 @@ import java.util.*;
 @Service
 public class UserServiceImpl implements UserService  {
 
+    @Autowired
+    private  PasswordEncoder passwordEncoder;
     public static final String AU_001 = "AU001";
     public static final String USER_CANNOT_BE_FOUND = "User cannot be found";
     @Autowired
@@ -24,6 +29,7 @@ public class UserServiceImpl implements UserService  {
     public UserDTO addUser(UserDTO userDTO) {
         userDTO.setCreatedDate(Calendar.getInstance().getTime());
         userDTO.setUpdatedDate(Calendar.getInstance().getTime());
+        userDTO.setPassword(passwordEncoder.encode(userDTO.getPassword()));
         userRepository.save(userDTO.toEntity());
         UserEntity userEntity = userRepository.findByEmployeeNumber(userDTO.getEmployeeNumber());
         return userEntity.toDTO();
