@@ -1,6 +1,6 @@
 package com.sliit.ayu.ayuservice.service.impl;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.sliit.ayu.ayuservice.constants.ErrorCode;
 import com.sliit.ayu.ayuservice.dto.UserDTO;
 import com.sliit.ayu.ayuservice.dto.UserUpdateDTO;
 import com.sliit.ayu.ayuservice.execption.AyuException;
@@ -8,6 +8,7 @@ import com.sliit.ayu.ayuservice.model.UserEntity;
 import com.sliit.ayu.ayuservice.repository.UserRepository;
 import com.sliit.ayu.ayuservice.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -15,8 +16,8 @@ import java.util.*;
 @Service
 public class UserServiceImpl implements UserService  {
 
-    public static final String AU_001 = "AU001";
-    public static final String USER_CANNOT_BE_FOUND = "User cannot be found";
+    @Autowired
+    private  PasswordEncoder passwordEncoder;
     @Autowired
     private UserRepository userRepository;
 
@@ -24,6 +25,7 @@ public class UserServiceImpl implements UserService  {
     public UserDTO addUser(UserDTO userDTO) {
         userDTO.setCreatedDate(Calendar.getInstance().getTime());
         userDTO.setUpdatedDate(Calendar.getInstance().getTime());
+        userDTO.setPassword(passwordEncoder.encode(userDTO.getPassword()));
         userRepository.save(userDTO.toEntity());
         UserEntity userEntity = userRepository.findByEmployeeNumber(userDTO.getEmployeeNumber());
         return userEntity.toDTO();
@@ -46,7 +48,7 @@ public class UserServiceImpl implements UserService  {
         if(optional.isPresent()){
             return optional.get().toDTO();
         } else {
-           throw AyuException.builder().errorCode(AU_001).errorMessage(USER_CANNOT_BE_FOUND).build();
+           throw AyuException.builder().errorCode(ErrorCode.AU_001.getCode()).errorMessage(ErrorCode.AU_001.getMessage()).build();
         }
     }
 
@@ -83,10 +85,10 @@ public class UserServiceImpl implements UserService  {
             if (optional.isPresent()) {
                 return optional.get().toDTO();
             } else {
-                throw AyuException.builder().errorCode(AU_001).errorMessage(USER_CANNOT_BE_FOUND).build();
+                throw AyuException.builder().errorCode(ErrorCode.AU_001.getCode()).errorMessage(ErrorCode.AU_001.getMessage()).build();
             }
         } else {
-            throw AyuException.builder().errorCode(AU_001).errorMessage(USER_CANNOT_BE_FOUND).build();
+            throw AyuException.builder().errorCode(ErrorCode.AU_001.getCode()).errorMessage(ErrorCode.AU_001.getMessage()).build();
         }
     }
 
@@ -96,7 +98,7 @@ public class UserServiceImpl implements UserService  {
         if(optional.isPresent()){
             userRepository.delete(optional.get());
         } else {
-            throw AyuException.builder().errorCode("AYU001").errorMessage(USER_CANNOT_BE_FOUND).build();
+            throw AyuException.builder().errorCode(ErrorCode.AU_001.getCode()).errorMessage(ErrorCode.AU_001.getMessage()).build();
         }
     }
 }
