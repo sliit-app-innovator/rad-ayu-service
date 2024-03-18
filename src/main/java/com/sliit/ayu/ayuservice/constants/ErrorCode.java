@@ -1,7 +1,7 @@
 package com.sliit.ayu.ayuservice.constants;
 
 public enum ErrorCode {
-    AU_001("User cannot be found"),
+    AU_001("Entity cannot be found"),
     AU_002("Duplicate Entry");
 
     String errorMessage;
