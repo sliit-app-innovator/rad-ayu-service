@@ -1,9 +1,8 @@
 package com.sliit.ayu.ayuservice.controller;
 
 import com.sliit.ayu.ayuservice.constants.Constants;
-import com.sliit.ayu.ayuservice.dto.UserDTO;
-import com.sliit.ayu.ayuservice.dto.UserUpdateDTO;
-import com.sliit.ayu.ayuservice.service.UserService;
+import com.sliit.ayu.ayuservice.dto.MedicineDTO;
+import com.sliit.ayu.ayuservice.service.MedicineService;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,42 +14,42 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/ayu/service/v1")
+@RequestMapping("/ayu/service1/v1")
 @Slf4j
 public class MedicineController {
 
     @Autowired
-    private UserService userService;
+    private MedicineService userService;
 
     @PostMapping("/medicine")
-    public ResponseEntity<UserDTO> createUser(@Valid @RequestBody UserDTO userDTO, @RequestHeader Map<String, String> headers){
+    public ResponseEntity<MedicineDTO> addMedicine(@Valid @RequestBody MedicineDTO medicineDTO, @RequestHeader Map<String, String> headers){
         log.info("User creation request correlation-id : {}", headers.get(Constants.HEADER_CORRELATION_ID));
-        return ResponseEntity.status(HttpStatus.CREATED).body(userService.addUser(userDTO));
+        return ResponseEntity.status(HttpStatus.CREATED).body(userService.addMedicine(medicineDTO));
     }
 
     @GetMapping("/medicine")
-    public ResponseEntity<List<UserDTO>> searchUser(@RequestHeader Map<String, String> headers){
+    public ResponseEntity<List<MedicineDTO>> searchMedicine(@RequestHeader Map<String, String> headers){
         log.info("User search request correlation-id : {}", headers.get(Constants.HEADER_CORRELATION_ID));
-        return ResponseEntity.status(HttpStatus.OK).body(userService.searchUser(headers.get("name")));
+        return ResponseEntity.status(HttpStatus.OK).body(userService.searchMedicine(headers.get("name")));
     }
 
     @GetMapping("/medicine/{medicineId}")
-    public ResponseEntity<UserDTO> getUser(@PathVariable int userId, @RequestHeader Map<String, String> headers){
+    public ResponseEntity<MedicineDTO> getMedicine(@PathVariable int id, @RequestHeader Map<String, String> headers){
         log.info("User get request correlation-id : {}", headers.get(Constants.HEADER_CORRELATION_ID));
-        return ResponseEntity.status(HttpStatus.OK).body(userService.getUser(userId));
+        return ResponseEntity.status(HttpStatus.OK).body(userService.getMedicine(id));
     }
 
     @PutMapping("/medicine/{medicineId}")
-    public ResponseEntity<UserDTO> updateUser(@PathVariable int userId, @RequestBody UserUpdateDTO userDTO, @RequestHeader Map<String, String> headers){
+    public ResponseEntity<MedicineDTO> updateMedicine(@PathVariable int id, @RequestBody MedicineDTO medicineDTO, @RequestHeader Map<String, String> headers){
         log.info("User update request correlation-id : {}", headers.get(Constants.HEADER_CORRELATION_ID));
-        userDTO.setId(userId);
-        return ResponseEntity.status(HttpStatus.CREATED).body(userService.updateUser(userDTO));
+        medicineDTO.setId(id);
+        return ResponseEntity.status(HttpStatus.CREATED).body(userService.updateMedicine(medicineDTO));
     }
 
     @DeleteMapping("/medicine/{medicineId}")
-    public ResponseEntity<Void> deleteUser(@PathVariable int userId, @RequestHeader Map<String, String> headers){
+    public ResponseEntity<Void> deleteMedicine(@PathVariable int id, @RequestHeader Map<String, String> headers){
         log.info("User delete request correlation-id : {}", headers.get(Constants.HEADER_CORRELATION_ID));
-        userService.deleteUser(userId);
+        userService.deleteMedicine(id);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 }
