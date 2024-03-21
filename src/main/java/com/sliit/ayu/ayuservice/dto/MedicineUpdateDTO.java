@@ -22,6 +22,7 @@ public class MedicineUpdateDTO {
 
     private String code;
     private Integer type;
+    private Integer unit;
 
     @JsonProperty("medicine_type")
     private Integer medicineType;
@@ -31,6 +32,7 @@ public class MedicineUpdateDTO {
         entity.setId(this.id);
         entity.setName(this.getName());
         entity.setType(this.type);
+        entity.setUnit(this.unit);
         entity.setMedicineType(this.medicineType);
         return entity;
     }

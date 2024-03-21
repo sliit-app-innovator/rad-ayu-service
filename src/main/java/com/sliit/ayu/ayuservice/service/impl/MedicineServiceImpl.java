@@ -72,12 +72,15 @@ public class MedicineServiceImpl implements MedicineService {
             if (medicineDTO.getCode() != null && !medicineDTO.getCode().isEmpty()) {
                 medicineEntity.setCode(medicineDTO.getCode());
             }
-            if (medicineDTO.getType() != null && medicineDTO.getType() != 0) {
-                medicineEntity.setType(medicineDTO.getType());
-            }
+            medicineEntity.setType(medicineDTO.getType());
+
             if (medicineDTO.getMedicineType() != null && medicineDTO.getMedicineType() != 0) {
                 medicineEntity.setMedicineType(medicineDTO.getMedicineType());
             }
+            if (medicineDTO.getUnit() != null && medicineDTO.getUnit() != 0) {
+                medicineEntity.setUnit(medicineDTO.getUnit());
+            }
+
             medicineEntity.setUpdatedDate(new Date());
             medicineRepository.save(medicineEntity);
             optional = medicineRepository.findById(medicineDTO.getId());

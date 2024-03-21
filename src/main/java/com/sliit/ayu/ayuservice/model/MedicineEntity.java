@@ -27,11 +27,12 @@ public class MedicineEntity {
     @Column(name ="type")
     private Integer type;
 
-    @Column(name ="medicine_type",unique = true)
+    @Column(name ="medicine_type")
     private Integer medicineType;
 
-    @Column(name ="designation")
-    private String designation;
+    @Column(name ="unit")
+    private Integer unit;
+
 
     @Column(name = "created_date", columnDefinition = "TIMESTAMP")
     private Date createdDate;
@@ -44,6 +45,8 @@ public class MedicineEntity {
         medicineDTO.setId(this.id);
         medicineDTO.setName(this.getName());
         medicineDTO.setType(this.type);
+        medicineDTO.setUnit(this.unit);
+        medicineDTO.setCode(this.code);
         medicineDTO.setMedicineType(this.medicineType);
         medicineDTO.setCreatedDate(this.createdDate);
         medicineDTO.setUpdatedDate(this.updatedDate);
