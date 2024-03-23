@@ -2,12 +2,13 @@ package com.sliit.ayu.ayuservice.service.impl;
 
 import com.sliit.ayu.ayuservice.constants.ErrorCode;
 import com.sliit.ayu.ayuservice.dto.MedicineDTO;
+import com.sliit.ayu.ayuservice.dto.MedicineTypeDTO;
 import com.sliit.ayu.ayuservice.dto.MedicineUpdateDTO;
-import com.sliit.ayu.ayuservice.dto.UserDTO;
 import com.sliit.ayu.ayuservice.execption.AyuException;
 import com.sliit.ayu.ayuservice.model.MedicineEntity;
-import com.sliit.ayu.ayuservice.model.UserEntity;
+import com.sliit.ayu.ayuservice.model.MedicineTypeEntity;
 import com.sliit.ayu.ayuservice.repository.MedicineRepository;
+import com.sliit.ayu.ayuservice.repository.MedicineTypeRepository;
 import com.sliit.ayu.ayuservice.service.MedicineService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,11 +20,13 @@ import java.util.*;
 @Service
 public class MedicineServiceImpl implements MedicineService {
 
-    private MedicineRepository medicineRepository;
+    private final MedicineRepository medicineRepository;
+    private final MedicineTypeRepository medicineTypeRepository;
 
     @Autowired
-    public MedicineServiceImpl(MedicineRepository medicineRepository) {
+    public MedicineServiceImpl(MedicineRepository medicineRepository, MedicineTypeRepository medicineTypeRepository) {
         this.medicineRepository = medicineRepository;
+        this.medicineTypeRepository = medicineTypeRepository;
     }
 
     @Override
@@ -99,6 +102,70 @@ public class MedicineServiceImpl implements MedicineService {
         Optional<MedicineEntity> optional = medicineRepository.findById(id);
         if(optional.isPresent()){
             medicineRepository.delete(optional.get());
+        } else {
+            throw AyuException.builder().errorCode(ErrorCode.AU_001.getCode()).errorMessage(ErrorCode.AU_001.getMessage()).build();
+        }
+    }
+
+    @Override
+    public MedicineTypeDTO addMedicineType(MedicineTypeDTO medicineTypeDTO) {
+        MedicineTypeEntity entity = medicineTypeRepository.findByName(medicineTypeDTO.getName());
+        if (entity != null) {
+            throw AyuException.builder().errorCode(ErrorCode.AU_002.getCode()).errorMessage(ErrorCode.AU_002.getMessage()).build();
+        } else {
+            medicineTypeDTO.setCreatedDate(Calendar.getInstance().getTime());
+            medicineTypeDTO.setUpdatedDate(Calendar.getInstance().getTime());
+            medicineTypeRepository.save(medicineTypeDTO.toEntity());
+            entity = medicineTypeRepository.findByName(medicineTypeDTO.getName());
+            return entity.toDTO();
+        }
+    }
+
+    @Override
+    public List<MedicineTypeDTO> searchMedicineType(String name) {
+        List<MedicineTypeDTO> entityList = new ArrayList<>();
+        if (name == null || name.isEmpty()) {
+            medicineTypeRepository.findAll().forEach(medicineEntity -> entityList.add(medicineEntity.toDTO()));
+        } else {
+            medicineTypeRepository.searchByName(name).forEach(medicineEntity -> entityList.add(medicineEntity.toDTO()));
+        }
+        return entityList;
+    }
+
+    @Override
+    public MedicineTypeDTO getMedicineType(int id) {
+        Optional<MedicineTypeEntity> optional = medicineTypeRepository.findById(id);
+        if(optional.isPresent()){
+            return optional.get().toDTO();
+        } else {
+            throw AyuException.builder().errorCode(ErrorCode.AU_001.getCode()).errorMessage(ErrorCode.AU_001.getMessage()).build();
+        }
+    }
+
+    @Override
+    public MedicineTypeDTO updateMedicineType(MedicineTypeDTO medicineTypeDTO) {
+        Optional<MedicineTypeEntity> optional = medicineTypeRepository.findById(medicineTypeDTO.getId());
+        if (optional.isPresent()) {
+            MedicineTypeEntity medicineTypeEntity = optional.get();
+            medicineTypeEntity.setName(medicineTypeDTO.getName());
+            medicineTypeEntity.setUpdatedDate(new Date());
+            medicineTypeRepository.save(medicineTypeEntity);
+            optional = medicineTypeRepository.findById(medicineTypeDTO.getId());
+            if (optional.isPresent()) {
+                return optional.get().toDTO();
+            } else {
+                throw AyuException.builder().errorCode(ErrorCode.AU_001.getCode()).errorMessage(ErrorCode.AU_001.getMessage()).build();
+            }
+        } else {
+            throw AyuException.builder().errorCode(ErrorCode.AU_001.getCode()).errorMessage(ErrorCode.AU_001.getMessage()).build();
+        }
+    }
+
+    @Override
+    public void deleteMedicineType(int id) {
+        Optional<MedicineTypeEntity> optional = medicineTypeRepository.findById(id);
+        if(optional.isPresent()){
+            medicineTypeRepository.delete(optional.get());
         } else {
             throw AyuException.builder().errorCode(ErrorCode.AU_001.getCode()).errorMessage(ErrorCode.AU_001.getMessage()).build();
         }

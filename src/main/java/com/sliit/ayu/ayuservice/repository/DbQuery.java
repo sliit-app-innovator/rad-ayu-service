@@ -8,7 +8,9 @@ public class DbQuery {
     public static final String SEARCH_STORE_BY_NAME_QUERY = "SELECT * FROM store WHERE name like %:name% ";
 
     public static final String GET_ALL_MEDICINE = "SELECT * FROM medicine";
+    public static final String GET_ALL_MEDICINE_TYPE = "SELECT * FROM medicine_type";
     public static final String SEARCH_MEDICINE_BY_NAME_QUERY = "SELECT * FROM medicine WHERE name like %:name%";
+    public static final String SEARCH_MEDICINE_TYPE_BY_NAME_QUERY = "SELECT * FROM medicine_type WHERE name like %:name%";
 
 
     public static final String SEARCH_WARD_BY_WARD_NUMBER_QUERY = "SELECT * FROM ward WHERE ward_number = :wardNumber";
