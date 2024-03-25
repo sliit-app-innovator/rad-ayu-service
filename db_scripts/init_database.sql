@@ -172,11 +172,13 @@ ENGINE = InnoDB;
 -- Table `ayu`.`medicine_lot`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `ayu`.`medicine_lot` (
-  `id` INT NOT NULL AUTO_INCREMENT,
-  `lot_num` VARCHAR(100) NOT NULL,
-  `expire_date` DATETIME NOT NULL,
-  `created_date` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `updated_date` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+`id` int NOT NULL AUTO_INCREMENT,
+  `lot_num` varchar(100) NOT NULL,
+  `expire_date` datetime NOT NULL,
+  `created_date` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_date` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `medicine_id` int DEFAULT NULL,
+  `qty` int DEFAULT NULL,
   PRIMARY KEY (`id`))
 ENGINE = InnoDB;
 
@@ -185,35 +187,24 @@ ENGINE = InnoDB;
 -- Table `ayu`.`medicine_moment`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `ayu`.`medicine_moment` (
-  `id` INT NOT NULL AUTO_INCREMENT,
-  `medicine_id` INT NOT NULL,
-  `reference_id` INT NOT NULL,
-  `lot_id` INT NOT NULL,
-  `store_id` INT NOT NULL,
-  `in` INT NOT NULL,
-  `out` INT NOT NULL,
-  `description` VARCHAR(255) NULL,
-  `created_date` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `updated_date` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  PRIMARY KEY (`id`),
-  INDEX `batch_id_idx` (`lot_id` ASC) VISIBLE,
-  INDEX `medi_id_idx` (`medicine_id` ASC) VISIBLE,
-  INDEX `fk_store_idx` (`store_id` ASC) VISIBLE,
-  CONSTRAINT `batch_id`
-    FOREIGN KEY (`lot_id`)
-    REFERENCES `ayu`.`medicine_lot` (`id`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION,
-  CONSTRAINT `medi_id`
-    FOREIGN KEY (`medicine_id`)
-    REFERENCES `ayu`.`medicine` (`id`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION,
-  CONSTRAINT `fk_store`
-    FOREIGN KEY (`store_id`)
-    REFERENCES `ayu`.`store` (`id`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION)
+ `id` int NOT NULL AUTO_INCREMENT,
+   `medicine_id` int NOT NULL,
+   `reference_id` int NOT NULL,
+   `lot_id` int NOT NULL,
+   `store_id` int NOT NULL,
+   `description` varchar(255) DEFAULT NULL,
+   `created_date` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+   `updated_date` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+   `in_qty` int DEFAULT NULL,
+   `out_qty` int DEFAULT NULL,
+   PRIMARY KEY (`id`),
+   KEY `batch_id_idx` (`lot_id`),
+   KEY `medi_id_idx` (`medicine_id`),
+   KEY `fk_store_idx` (`store_id`),
+   CONSTRAINT `batch_id` FOREIGN KEY (`lot_id`) REFERENCES `medicine_lot` (`id`),
+   CONSTRAINT `fk_store` FOREIGN KEY (`store_id`) REFERENCES `store` (`id`),
+   CONSTRAINT `medi_id` FOREIGN KEY (`medicine_id`) REFERENCES `medicine` (`id`)
+ )
 ENGINE = InnoDB;
 
 

@@ -1,6 +1,7 @@
 package com.sliit.ayu.ayuservice.repository;
 
 import com.sliit.ayu.ayuservice.model.MedicineEntity;
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
@@ -10,7 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 @Repository
-public interface MedicineRepository extends CrudRepository<MedicineEntity, Integer>, JpaSpecificationExecutor<MedicineEntity>  {
+public interface MedicineRepository extends JpaRepository<MedicineEntity, Integer> {
 
         MedicineEntity findByName(String name);
 
