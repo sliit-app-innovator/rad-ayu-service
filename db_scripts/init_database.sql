@@ -134,6 +134,23 @@ CREATE TABLE IF NOT EXISTS `ayu`.`stock_retrieval` (
   PRIMARY KEY (`id`))
 ENGINE = InnoDB;
 
+-- -----------------------------------------------------
+-- Table `ayu`.`stock_retrieval_detail`
+-- -----------------------------------------------------
+
+CREATE TABLE `ayu`.`stock_retrieval_detail` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `created_date` timestamp NULL DEFAULT NULL,
+  `medicine_id` int NOT NULL,
+  `qty` int NOT NULL,
+  `stock_retrieval_id` int NOT NULL,
+  `updated_date` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `FK_stock_retrieve_idx` (`stock_retrieval_id`),
+  CONSTRAINT `FK_stock_retrieve` FOREIGN KEY (`stock_retrieval_id`) REFERENCES `stock_retrieval` (`id`)
+) ENGINE=InnoDB ;
+
+
 
 -- -----------------------------------------------------
 -- Table `ayu`.`stock_transfer`
