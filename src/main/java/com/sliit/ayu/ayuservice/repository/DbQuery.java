@@ -12,6 +12,10 @@ public class DbQuery {
     public static final String SEARCH_MEDICINE_BY_NAME_QUERY = "SELECT * FROM medicine WHERE name like %:name%";
     public static final String SEARCH_MEDICINE_TYPE_BY_NAME_QUERY = "SELECT * FROM medicine_type WHERE name like %:name%";
 
+    public static final String GET_ALL_STOCK_REQUISITION = "SELECT * FROM stock_requisition";
+    public static final String SEARCH_STOCK_REQUISITION_BY_REQUESTED_BY_QUERY = "SELECT * FROM stock_requisition WHERE requested_by like %:requestBy%";
+    public static final String SEARCH_STOCK_REQUISITION_BY_STORE_ID_QUERY = "SELECT * FROM stock_requisition WHERE to_store =:storeId" ;
+    public static final String SEARCH_STOCK_REQUISITION_BY_STORE_ID_AND_REQUESTED_BY_QUERY = "SELECT * FROM stock_requisition WHERE to_store =:storeId OR requested_by like %:requestBy%";
 
     public static final String SEARCH_WARD_BY_WARD_NUMBER_QUERY = "SELECT * FROM ward WHERE ward_number = :wardNumber";
 
