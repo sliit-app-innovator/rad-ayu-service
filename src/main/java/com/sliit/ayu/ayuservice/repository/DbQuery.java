@@ -17,6 +17,10 @@ public class DbQuery {
     public static final String SEARCH_STOCK_REQUISITION_BY_STORE_ID_QUERY = "SELECT * FROM stock_requisition WHERE to_store =:storeId" ;
     public static final String SEARCH_STOCK_REQUISITION_BY_STORE_ID_AND_REQUESTED_BY_QUERY = "SELECT * FROM stock_requisition WHERE to_store =:storeId OR requested_by like %:requestBy%";
 
+    public static final String GET_ALL_STOCK_REQUISITION_ITEMS_BY_REQUISITION_ID = "SELECT * FROM stock_requisition_item where stock_requisition_id = :requisitionId";
+    public static final String GET_ALL_STOCK_REQUISITION_ITEMS_BY_ID = "SELECT * FROM stock_requisition_item where id = :id";
+    public static final String GET_STOCK_REQUISITION_ITEMS_BY_REQUISITION_ID_AND_MEDICINE_ID = "SELECT * FROM stock_requisition_item where stock_requisition_id = :requisitionId AND medicine_id =:medicineId LIMIT 1";
+
     public static final String SEARCH_WARD_BY_WARD_NUMBER_QUERY = "SELECT * FROM ward WHERE ward_number = :wardNumber";
 
     public static final String SEARCH_WARD_BY_WARD_TYPE_QUERY = "SELECT * FROM ward WHERE type_id = :typeId";

@@ -7,37 +7,53 @@ import com.sliit.ayu.ayuservice.dto.StockRequisitionDTO;
 import com.sliit.ayu.ayuservice.dto.StockRequisitionItemDTO;
 import com.sliit.ayu.ayuservice.execption.AyuException;
 import com.sliit.ayu.ayuservice.model.StockRequisitionEntity;
+import com.sliit.ayu.ayuservice.repository.StockRequisitionItemRepository;
 import com.sliit.ayu.ayuservice.repository.StockRequisitionRepository;
 import com.sliit.ayu.ayuservice.service.StockRequisitionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
 import java.util.*;
 
 @Service
 public class StockRequisitionServiceImpl implements StockRequisitionService {
 
     private StockRequisitionRepository stockRequisitionRepository;
+    private StockRequisitionItemRepository stockRequisitionItemRepository;
 
     @Autowired
-    public StockRequisitionServiceImpl(StockRequisitionRepository stockRequisitionRepository) {
+    public StockRequisitionServiceImpl(StockRequisitionRepository stockRequisitionRepository, StockRequisitionItemRepository stockRequisitionItemRepository) {
         this.stockRequisitionRepository = stockRequisitionRepository;
+        this.stockRequisitionItemRepository = stockRequisitionItemRepository;
     }
 
     @Override
     public StockRequisitionDTO requestStockRequisition(StockRequisitionDTO stockRequisitionDTO) {
         if (stockRequisitionDTO.getStatus() != null && !stockRequisitionDTO.getStatus().equalsIgnoreCase(OrderStatus.NEW.name())) {
             throw AyuException.builder().errorCode(ErrorCode.AU_003.getCode()).errorMessage(ErrorCode.AU_003.getMessage()).build();
+        } else if(stockRequisitionDTO.getItems() == null || stockRequisitionDTO.getItems().isEmpty()) {
+            throw AyuException.builder().errorCode(ErrorCode.AU_004.getCode()).errorMessage(ErrorCode.AU_004.getMessage()).build();
         } else {
-            stockRequisitionDTO.setReference(Utils.generateReference("AYU_R"));
+                        stockRequisitionDTO.setReference(Utils.generateReference("AYU_R"));
             if(stockRequisitionDTO.getDate() == null) {
                 stockRequisitionDTO.setDate(Calendar.getInstance().getTime());
             }
             stockRequisitionDTO.setCreatedDate(Calendar.getInstance().getTime());
             stockRequisitionDTO.setUpdatedDate(Calendar.getInstance().getTime());
             stockRequisitionRepository.save(stockRequisitionDTO.toEntity());
-            return stockRequisitionRepository.findByReference(stockRequisitionDTO.getReference()).toDTO();
+            StockRequisitionDTO stockRequisitionResponseDTO = stockRequisitionRepository.findByReference(stockRequisitionDTO.getReference()).toDTO();
+
+            int requisitionId = stockRequisitionResponseDTO.getId();
+            List<StockRequisitionItemDTO> requisitionItemDTOS = new ArrayList<>();
+            stockRequisitionDTO.getItems().forEach(item -> {
+                item.setStockRequisitionId(requisitionId);
+                item.setCreatedDate(Calendar.getInstance().getTime());
+                item.setUpdatedDate(Calendar.getInstance().getTime());
+                stockRequisitionItemRepository.save(item.toEntity());
+                requisitionItemDTOS.add(stockRequisitionItemRepository.getByRequisitionIdAndMedicineId(requisitionId, item.getMedicineId()).toDTO());
+            });
+            stockRequisitionResponseDTO.setItems(requisitionItemDTOS);
+            return stockRequisitionResponseDTO;
         }
     }
 
@@ -119,30 +135,5 @@ public class StockRequisitionServiceImpl implements StockRequisitionService {
         } else {
             throw AyuException.builder().errorCode(ErrorCode.AU_001.getCode()).errorMessage(ErrorCode.AU_001.getMessage()).build();
         }
-    }
-
-    @Override
-    public StockRequisitionItemDTO requestStockRequisitionItems(StockRequisitionItemDTO stockRequisitionItems) {
-        return null;
-    }
-
-    @Override
-    public List<StockRequisitionItemDTO> searchStockRequisitionRequestItems(int medicineId) {
-        return null;
-    }
-
-    @Override
-    public StockRequisitionItemDTO getStockRequisitionRequestItem(int id) {
-        return null;
-    }
-
-    @Override
-    public StockRequisitionItemDTO updateStockRequisitionRequestItem(StockRequisitionItemDTO stockRequisitionItemDTO) {
-        return null;
-    }
-
-    @Override
-    public void deleteStockRequisitionRequestItem(int id) {
-
     }
 }

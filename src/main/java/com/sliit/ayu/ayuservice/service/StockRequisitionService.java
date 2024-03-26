@@ -14,10 +14,4 @@ public interface StockRequisitionService {
     StockRequisitionDTO getStockRequisitionRequest(int id);
     StockRequisitionDTO updateStockRequisitionRequest(StockRequisitionDTO stockRequisitionDTO);
     void deleteStockRequisitionRequest(int id);
-
-    StockRequisitionItemDTO requestStockRequisitionItems(StockRequisitionItemDTO stockRequisitionItems);
-    List<StockRequisitionItemDTO> searchStockRequisitionRequestItems(int medicineId);
-    StockRequisitionItemDTO getStockRequisitionRequestItem(int id);
-    StockRequisitionItemDTO updateStockRequisitionRequestItem(StockRequisitionItemDTO stockRequisitionItemDTO);
-    void deleteStockRequisitionRequestItem(int id);
 }

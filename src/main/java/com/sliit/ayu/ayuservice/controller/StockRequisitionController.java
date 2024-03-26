@@ -3,11 +3,14 @@ package com.sliit.ayu.ayuservice.controller;
 import com.sliit.ayu.ayuservice.constants.Constants;
 import com.sliit.ayu.ayuservice.dto.*;
 import com.sliit.ayu.ayuservice.service.StockRequisitionService;
+
+
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -16,6 +19,7 @@ import java.util.Map;
 @RestController
 @RequestMapping("/ayu/service/v1")
 @Slf4j
+@Validated
 public class StockRequisitionController {
 
     public static final String STORE_ID = "store-id";
@@ -53,44 +57,6 @@ public class StockRequisitionController {
     public ResponseEntity<Void> deleteStockRequisition(@PathVariable int id, @RequestHeader Map<String, String> headers){
         log.info("User delete request correlation-id : {}", headers.get(Constants.HEADER_CORRELATION_ID));
         stockRequisitionService.deleteStockRequisitionRequest(id);
-        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
-    }
-
-    //
-
-    @PostMapping("/stock-requisition/{requisitionId}/item")
-    public ResponseEntity<StockRequisitionItemDTO> addStockRequisitionItems(@Valid @RequestBody StockRequisitionItemDTO stockRequisitionItemDTO,
-                                                                            @PathVariable int requisitionId,
-                                                                            @RequestHeader Map<String, String> headers){
-        log.info("User creation request correlation-id : {}", headers.get(Constants.HEADER_CORRELATION_ID));
-        return ResponseEntity.status(HttpStatus.CREATED).body(stockRequisitionService.requestStockRequisitionItems(stockRequisitionItemDTO));
-    }
-
-    @GetMapping("/stock-requisition/{requisitionId}/item")
-    public ResponseEntity<List<StockRequisitionItemDTO>> searchStockRequisitionItems(@PathVariable int requisitionId, @RequestHeader Map<String, String> headers){
-        log.info("User search request correlation-id : {}", headers.get(Constants.HEADER_CORRELATION_ID));
-        int storeId = headers.get(STORE_ID) != null ? Integer.parseInt(headers.get(STORE_ID)) : 0;
-        return ResponseEntity.status(HttpStatus.OK).body(stockRequisitionService.searchStockRequisitionRequestItems(storeId));
-    }
-
-    @GetMapping("/stock-requisition/{requisitionId}/item/{id}")
-    public ResponseEntity<StockRequisitionItemDTO> getStockRequisitionItem(@PathVariable int requisitionId, @PathVariable int id, @RequestHeader Map<String, String> headers){
-        log.info("User get request correlation-id : {}", headers.get(Constants.HEADER_CORRELATION_ID));
-        return ResponseEntity.status(HttpStatus.OK).body(stockRequisitionService.getStockRequisitionRequestItem(id));
-    }
-
-    @PutMapping("/stock-requisition/{requisitionId}/item/{id}")
-    public ResponseEntity<StockRequisitionItemDTO> updateStockRequisitionItem(@PathVariable int requisitionId, @PathVariable int id, @RequestBody StockRequisitionItemDTO stockRequisitionItemDTO, @RequestHeader Map<String, String> headers){
-        log.info("User update request correlation-id : {}", headers.get(Constants.HEADER_CORRELATION_ID));
-        stockRequisitionItemDTO.setId(id);
-        stockRequisitionItemDTO.setStockRequisitionId(requisitionId);
-        return ResponseEntity.status(HttpStatus.CREATED).body(stockRequisitionService.updateStockRequisitionRequestItem(stockRequisitionItemDTO));
-    }
-
-    @DeleteMapping("/stock-requisition/{requisitionId}/item/{id}")
-    public ResponseEntity<Void> deleteStockRequisitionItem(@PathVariable int requisitionId, @PathVariable int id, @RequestHeader Map<String, String> headers){
-        log.info("User delete request correlation-id : {}", headers.get(Constants.HEADER_CORRELATION_ID));
-        stockRequisitionService.deleteStockRequisitionRequestItem(id);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 }
