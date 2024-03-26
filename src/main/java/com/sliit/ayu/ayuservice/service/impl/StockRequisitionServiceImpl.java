@@ -1,5 +1,6 @@
 package com.sliit.ayu.ayuservice.service.impl;
 
+import com.sliit.ayu.ayuservice.Utils;
 import com.sliit.ayu.ayuservice.constants.ErrorCode;
 import com.sliit.ayu.ayuservice.constants.OrderStatus;
 import com.sliit.ayu.ayuservice.dto.StockRequisitionDTO;
@@ -29,7 +30,7 @@ public class StockRequisitionServiceImpl implements StockRequisitionService {
         if (stockRequisitionDTO.getStatus() != null && !stockRequisitionDTO.getStatus().equalsIgnoreCase(OrderStatus.NEW.name())) {
             throw AyuException.builder().errorCode(ErrorCode.AU_003.getCode()).errorMessage(ErrorCode.AU_003.getMessage()).build();
         } else {
-            stockRequisitionDTO.setReference(generateOrderReference());
+            stockRequisitionDTO.setReference(Utils.generateReference("AYU_R"));
             if(stockRequisitionDTO.getDate() == null) {
                 stockRequisitionDTO.setDate(Calendar.getInstance().getTime());
             }
@@ -143,16 +144,5 @@ public class StockRequisitionServiceImpl implements StockRequisitionService {
     @Override
     public void deleteStockRequisitionRequestItem(int id) {
 
-    }
-
-    private String generateOrderReference(){
-        LocalDateTime localDateTime = LocalDateTime.now();
-        String month = localDateTime.getMonth().ordinal() < 10 ? String.format("0%s", localDateTime.getMonth().ordinal()) : String.valueOf(localDateTime.getMonth().ordinal());
-        String day = localDateTime.getDayOfMonth() < 10 ? String.format("0%s", localDateTime.getDayOfMonth()) : String.valueOf(localDateTime.getDayOfMonth());
-        String hour = localDateTime.getHour() < 10 ? String.format("0%s", localDateTime.getHour()) : String.valueOf(localDateTime.getHour());
-        String minute = localDateTime.getMinute() < 10 ? String.format("0%s", localDateTime.getMinute()) : String.valueOf(localDateTime.getMinute());
-        String seconds = localDateTime.getSecond() < 10 ? String.format("0%s", localDateTime.getSecond()) : String.valueOf(localDateTime.getSecond());
-        String suffix = String.format("%s%s%s%s%s%s", localDateTime.getYear(), month, day, hour, minute, seconds);
-        return String.format("AYU_R%s", suffix);
     }
 }
