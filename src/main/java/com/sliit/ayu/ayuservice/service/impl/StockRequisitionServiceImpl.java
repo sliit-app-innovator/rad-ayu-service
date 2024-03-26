@@ -10,6 +10,7 @@ import com.sliit.ayu.ayuservice.model.StockRequisitionEntity;
 import com.sliit.ayu.ayuservice.repository.StockRequisitionItemRepository;
 import com.sliit.ayu.ayuservice.repository.StockRequisitionRepository;
 import com.sliit.ayu.ayuservice.service.StockRequisitionService;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -28,6 +29,7 @@ public class StockRequisitionServiceImpl implements StockRequisitionService {
     }
 
     @Override
+    @Transactional(Transactional.TxType.REQUIRES_NEW)
     public StockRequisitionDTO requestStockRequisition(StockRequisitionDTO stockRequisitionDTO) {
         if (stockRequisitionDTO.getStatus() != null && !stockRequisitionDTO.getStatus().equalsIgnoreCase(OrderStatus.NEW.name())) {
             throw AyuException.builder().errorCode(ErrorCode.AU_003.getCode()).errorMessage(ErrorCode.AU_003.getMessage()).build();
@@ -123,6 +125,7 @@ public class StockRequisitionServiceImpl implements StockRequisitionService {
     }
 
     @Override
+    @Transactional(Transactional.TxType.REQUIRES_NEW)
     public void deleteStockRequisitionRequest(int id) {
         Optional<StockRequisitionEntity> optional = stockRequisitionRepository.findById(id);
         if(optional.isPresent()){
@@ -131,6 +134,7 @@ public class StockRequisitionServiceImpl implements StockRequisitionService {
                 throw AyuException.builder().errorCode(ErrorCode.AU_003.getCode()).errorMessage(ErrorCode.AU_003.getMessage()).build();
             } else {
                 stockRequisitionRepository.delete(optional.get());
+                stockRequisitionItemRepository.deleteByRequisitionId(id);
             }
         } else {
             throw AyuException.builder().errorCode(ErrorCode.AU_001.getCode()).errorMessage(ErrorCode.AU_001.getMessage()).build();

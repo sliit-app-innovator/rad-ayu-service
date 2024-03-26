@@ -20,6 +20,7 @@ public class DbQuery {
     public static final String GET_ALL_STOCK_REQUISITION_ITEMS_BY_REQUISITION_ID = "SELECT * FROM stock_requisition_item where stock_requisition_id = :requisitionId";
     public static final String GET_ALL_STOCK_REQUISITION_ITEMS_BY_ID = "SELECT * FROM stock_requisition_item where id = :id";
     public static final String GET_STOCK_REQUISITION_ITEMS_BY_REQUISITION_ID_AND_MEDICINE_ID = "SELECT * FROM stock_requisition_item where stock_requisition_id = :requisitionId AND medicine_id =:medicineId LIMIT 1";
+    public static final String DELETE_ALL_STOCK_REQUISITION_ITEMS_BY_REQUISITION_ID = "DELETE FROM stock_requisition_item where stock_requisition_id = :requisitionId";
 
     public static final String SEARCH_WARD_BY_WARD_NUMBER_QUERY = "SELECT * FROM ward WHERE ward_number = :wardNumber";
 
