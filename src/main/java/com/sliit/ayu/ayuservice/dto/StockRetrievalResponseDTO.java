@@ -9,8 +9,10 @@ import lombok.Data;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class StockRetrievalResponseDTO {
     int stockReceivedId;
+    boolean status;
 
-    public StockRetrievalResponseDTO(Integer id) {
+    public StockRetrievalResponseDTO(Integer id,boolean stst) {
         stockReceivedId =id;
+        status =stst;
     }
 }

@@ -1,9 +1,7 @@
 package com.sliit.ayu.ayuservice.service.impl;
 
 import com.sliit.ayu.ayuservice.constants.ErrorCode;
-import com.sliit.ayu.ayuservice.dto.MedicineDTO;
-import com.sliit.ayu.ayuservice.dto.MedicineTypeDTO;
-import com.sliit.ayu.ayuservice.dto.MedicineUpdateDTO;
+import com.sliit.ayu.ayuservice.dto.*;
 import com.sliit.ayu.ayuservice.execption.AyuException;
 import com.sliit.ayu.ayuservice.model.MedicineEntity;
 import com.sliit.ayu.ayuservice.model.MedicineTypeEntity;
@@ -11,15 +9,18 @@ import com.sliit.ayu.ayuservice.repository.MedicineRepository;
 import com.sliit.ayu.ayuservice.repository.MedicineTypeRepository;
 import com.sliit.ayu.ayuservice.service.MedicineService;
 import lombok.extern.slf4j.Slf4j;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
+import java.util.stream.Collectors;
 import java.util.*;
 
 @Slf4j
 @Service
 public class MedicineServiceImpl implements MedicineService {
 
+    @Autowired
+    private ModelMapper modelMapper;
     private final MedicineRepository medicineRepository;
     private final MedicineTypeRepository medicineTypeRepository;
 
@@ -83,6 +84,9 @@ public class MedicineServiceImpl implements MedicineService {
             if (medicineDTO.getUnit() != null && medicineDTO.getUnit() != 0) {
                 medicineEntity.setUnit(medicineDTO.getUnit());
             }
+
+
+            medicineEntity.setIsExpire(medicineDTO.getIsExpire());
 
             medicineEntity.setUpdatedDate(new Date());
             medicineRepository.save(medicineEntity);
@@ -169,5 +173,33 @@ public class MedicineServiceImpl implements MedicineService {
         } else {
             throw AyuException.builder().errorCode(ErrorCode.AU_001.getCode()).errorMessage(ErrorCode.AU_001.getMessage()).build();
         }
+    }
+
+    @Override
+    public MedicineSearchResponseDTO searchPagination(int page, int perPage, String search) {
+        int limit = perPage;
+        int skip = (page - 1) * perPage;
+        List<Object[]>  medicineEntityList= medicineRepository.searchPagination(limit,skip,search);
+        List<MedicineDTO> dtos = medicineEntityList.stream().map(row -> new MedicineDTO(
+                Optional.ofNullable(row[0]).map(Integer.class::cast).orElse(null),
+                Optional.ofNullable(row[1]).map(String.class::cast).orElse(null),
+                Optional.ofNullable(row[2]).map(String.class::cast).orElse(null),
+                Optional.ofNullable(row[3]).map(Integer.class::cast).orElse(null),
+                Optional.ofNullable(row[4]).map(Integer.class::cast).orElse(null),
+                Optional.ofNullable(row[5]).map(Integer.class::cast).orElse(null),
+                Optional.ofNullable(row[6]).map(String.class::cast).orElse(null),
+                (Date) row[7], // Assuming date fields are always non-null
+                (Date) row[8],
+                Optional.ofNullable(row[9]).map(Boolean.class::cast).orElse(null)
+        )).collect(Collectors.toList());
+
+        MedicineSearchResponseDTO responseDTO = new MedicineSearchResponseDTO();
+        responseDTO.setData(dtos);
+        responseDTO.setPerPage(perPage);
+        responseDTO.setPage(page);
+        responseDTO.setTotal(medicineRepository.searchPaginationCount(search));
+        responseDTO.setTotalPages(responseDTO.getTotal()/perPage);
+
+        return  responseDTO;
     }
 }

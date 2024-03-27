@@ -2,6 +2,7 @@ package com.sliit.ayu.ayuservice.controller;
 
 import com.sliit.ayu.ayuservice.constants.Constants;
 import com.sliit.ayu.ayuservice.dto.MedicineDTO;
+import com.sliit.ayu.ayuservice.dto.MedicineSearchResponseDTO;
 import com.sliit.ayu.ayuservice.dto.MedicineTypeDTO;
 import com.sliit.ayu.ayuservice.dto.MedicineUpdateDTO;
 import com.sliit.ayu.ayuservice.service.MedicineService;
@@ -33,6 +34,18 @@ public class MedicineController {
     public ResponseEntity<List<MedicineDTO>> searchMedicine(@RequestHeader Map<String, String> headers){
         log.info("User search request correlation-id : {}", headers.get(Constants.HEADER_CORRELATION_ID));
         return ResponseEntity.status(HttpStatus.OK).body(medicineService.searchMedicine(headers.get("name")));
+    }
+
+    @GetMapping("/medicine/search-pagination")
+    public ResponseEntity<MedicineSearchResponseDTO> searchPagination(@RequestHeader Map<String, String> headers,
+                                                                      @RequestParam(name = "page") int page,
+                                                                      @RequestParam(name = "per_page") int perPage,
+                                                                      @RequestParam(name = "search", required = false, defaultValue = "") String search
+                                                              ){
+        log.info("User search pagination request correlation-id : {}", headers.get(Constants.HEADER_CORRELATION_ID));
+
+
+        return ResponseEntity.status(HttpStatus.OK).body(medicineService.searchPagination(page,perPage,search));
     }
 
     @GetMapping("/medicine/{medicineId}")

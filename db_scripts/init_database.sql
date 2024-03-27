@@ -209,7 +209,7 @@ CREATE TABLE IF NOT EXISTS `ayu`.`medicine_moment` (
  `id` int NOT NULL AUTO_INCREMENT,
    `medicine_id` int NOT NULL,
    `reference_id` int NOT NULL,
-   `lot_id` int NOT NULL,
+   `lot_id` int DEFAULT NULL,
    `store_id` int NOT NULL,
    `description` varchar(255) DEFAULT NULL,
    `created_date` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,

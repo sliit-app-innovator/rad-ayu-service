@@ -22,7 +22,6 @@ public class StockRetrievalRequestDTO {
     private Integer medicineId;
 
     private List<StockMedicineRequestDTO> medicineList;
-    private List<StockMedicineExpireDatesRequestDTO> expireDates;
 
     public Integer getMedicineId(StockMedicineRequestDTO stockMedicineRequestDTO) {
         return medicineId;

@@ -6,7 +6,6 @@ public enum TransactionDescriptions {
     AU_STOCK_TRANSFER_IN("STOCK_TRANSFER_IN"),
     AU_STOCK_ISSUE_TO_PATIENT("STOCK_ISSUE_TO_PATIENT");
 
-
     String description;
 
 

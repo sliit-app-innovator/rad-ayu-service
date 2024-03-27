@@ -10,6 +10,8 @@ public class DbQuery {
     public static final String GET_ALL_MEDICINE = "SELECT * FROM medicine";
     public static final String GET_ALL_MEDICINE_TYPE = "SELECT * FROM medicine_type";
     public static final String SEARCH_MEDICINE_BY_NAME_QUERY = "SELECT * FROM medicine WHERE name like %:name%";
+    public static final String SEARCH_MEDICINE_BY_NAME_OR_CODE_PAGING = "SELECT m.id, m.name, m.code, m.type, m.medicine_type, m.unit, u.unit as uname, m.created_date, m.updated_date, m.is_expire  FROM  medicine m INNER JOIN unit u ON m.unit=u.id WHERE LOWER(m.name) LIKE LOWER(concat('%', :search, '%')) OR LOWER(m.code) LIKE LOWER(concat('%', :search, '%')) LIMIT :limit OFFSET :skip";
+    public static final String SEARCH_MEDICINE_BY_NAME_OR_CODE_COUNT = "SELECT count(*) as count FROM  medicine m WHERE LOWER(m.name) LIKE LOWER(concat('%', :search, '%')) OR LOWER(m.code) LIKE LOWER(concat('%', :search, '%'))";
     public static final String SEARCH_MEDICINE_TYPE_BY_NAME_QUERY = "SELECT * FROM medicine_type WHERE name like %:name%";
 
     public static final String GET_ALL_STOCK_REQUISITION = "SELECT * FROM stock_requisition";

@@ -10,7 +10,6 @@ import java.util.Date;
 @Valid
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class StockMedicineExpireDatesRequestDTO {
-    private Integer medicineId;
-    private Integer qty;
+    private Integer expireQty;
     private Date expireDate;
 }

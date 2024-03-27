@@ -33,12 +33,18 @@ public class MedicineEntity {
     @Column(name ="unit")
     private Integer unit;
 
+    @Transient
+    @Column(name ="uname")
+    private String uname;
 
     @Column(name = "created_date", columnDefinition = "TIMESTAMP")
     private Date createdDate;
 
     @Column(name = "updated_date", columnDefinition = "TIMESTAMP")
     private Date updatedDate;
+
+    @Column(name ="is_expire")
+    private Boolean isExpire;
 
     public MedicineDTO toDTO() {
         MedicineDTO medicineDTO = new MedicineDTO();
@@ -47,6 +53,8 @@ public class MedicineEntity {
         medicineDTO.setType(this.type);
         medicineDTO.setUnit(this.unit);
         medicineDTO.setCode(this.code);
+        medicineDTO.setUname(this.uname);
+        medicineDTO.setIsExpire(this.isExpire);
         medicineDTO.setMedicineType(this.medicineType);
         medicineDTO.setCreatedDate(this.createdDate);
         medicineDTO.setUpdatedDate(this.updatedDate);

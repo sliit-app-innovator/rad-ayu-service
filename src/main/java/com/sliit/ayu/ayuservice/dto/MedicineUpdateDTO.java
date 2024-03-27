@@ -27,6 +27,8 @@ public class MedicineUpdateDTO {
     @JsonProperty("medicine_type")
     private Integer medicineType;
 
+    private Boolean isExpire;
+
     public MedicineEntity toEntity() {
         MedicineEntity entity = new MedicineEntity();
         entity.setId(this.id);

@@ -1,9 +1,6 @@
 package com.sliit.ayu.ayuservice.service;
 
-import com.sliit.ayu.ayuservice.dto.MedicineDTO;
-import com.sliit.ayu.ayuservice.dto.MedicineTypeDTO;
-import com.sliit.ayu.ayuservice.dto.MedicineUpdateDTO;
-import com.sliit.ayu.ayuservice.dto.UserDTO;
+import com.sliit.ayu.ayuservice.dto.*;
 
 import java.util.List;
 
@@ -19,4 +16,6 @@ public interface MedicineService {
     public MedicineTypeDTO getMedicineType(int id);
     public MedicineTypeDTO updateMedicineType(MedicineTypeDTO medicineTypeDTO);
     public void deleteMedicineType(int id);
+
+    MedicineSearchResponseDTO searchPagination(int page, int perPage, String search);
 }

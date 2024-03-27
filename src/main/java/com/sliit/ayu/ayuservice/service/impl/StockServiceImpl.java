@@ -43,72 +43,62 @@ public class StockServiceImpl implements StockService {
         StockRetrievalEntity stockRetrieval = stockRetrievalRepository.save(
                 modelMapper.map(stockRetrievalRequestDTO, StockRetrievalEntity.class));
 
-        List<Integer> medicineIds = new LinkedList<>();
-                stockRetrievalRequestDTO.getMedicineList().forEach(stockMedicineRequestDTO -> {
-                    medicineIds.add(stockMedicineRequestDTO.getMedicineId());
+            List<MedicineMovementEntity> medicineMovementList = new LinkedList<>();
+
+        stockRetrievalRequestDTO.getMedicineList().forEach(item -> {
+            StockRetrievalDetailEntity  stockRetrievalDetailEntity = new StockRetrievalDetailEntity();
+            stockRetrievalDetailEntity.setMedicineId(item.getId());
+            stockRetrievalDetailEntity.setStockRetrievalId(stockRetrieval.getId());
+            stockRetrievalDetailEntity.setQty(item.getQty());
+            stockRetrievalDetailEntity.setCreatedDate(now);
+            stockRetrievalDetailEntity.setUpdatedDate(now);
+
+            StockRetrievalDetailEntity itemDetails = stockRetrievalDetailRepository.save(stockRetrievalDetailEntity);
+            if(item.getIsExpire() && !item.getLots().isEmpty()){
+                item.getLots().forEach(lotdetails->{
+                    MedicineLotEntity lot = new MedicineLotEntity();
+                    lot.setMedicineId(item.getId());
+                    lot.setLotNum(item.getCode() + "-" + formatter.format(lotdetails.getExpireDate()));
+                    lot.setQty(lotdetails.getExpireQty());
+                    lot.setExpireDate(lotdetails.getExpireDate());
+                    lot.setUpdatedDate(now);
+                    lot.setCreatedDate(now);
+                    MedicineLotEntity storedLot = medicineLotRepository.save(lot);
+
+                    MedicineMovementEntity medicineMovement = new MedicineMovementEntity();
+                    medicineMovement.setMedicineId(item.getId());
+                    medicineMovement.setDescription(TransactionDescriptions.AU_STOCK_RECEIVE.getDescription());
+                    medicineMovement.setInQty(lotdetails.getExpireQty());
+                    medicineMovement.setOutQty(0);
+                    medicineMovement.setLotId(storedLot.getId());
+                    medicineMovement.setStoreId(stockRetrievalRequestDTO.getStoreId());
+                    medicineMovement.setReferenceId(itemDetails.getId());
+                    medicineMovement.setCreatedDate(now);
+                    medicineMovement.setUpdatedDate(now);
+                    medicineMovementList.add(medicineMovement);
+
+                });
+            }else{
+                MedicineMovementEntity medicineMovement = new MedicineMovementEntity();
+                medicineMovement.setMedicineId(item.getId());
+                medicineMovement.setDescription(TransactionDescriptions.AU_STOCK_RECEIVE.getDescription());
+                medicineMovement.setInQty(item.getQty());
+                medicineMovement.setOutQty(0);
+                medicineMovement.setStoreId(stockRetrievalRequestDTO.getStoreId());
+                medicineMovement.setReferenceId(itemDetails.getId());
+                medicineMovement.setCreatedDate(now);
+                medicineMovement.setUpdatedDate(now);
+                medicineMovementList.add(medicineMovement);
+            }
         });
 
-        Map<Integer, String> medicineCodeMap = medicineRepository.findAllById(medicineIds).stream()
-                .collect(Collectors.toMap(MedicineEntity::getId, MedicineEntity::getCode));
 
-        // Processing and saving Stock Retrieval Detail Entries
-        List<StockRetrievalDetailEntity> detailEntryList = createDetailEntryList(stockRetrievalRequestDTO, stockRetrieval.getId(), now);
-        List<StockRetrievalDetailEntity> retrievalDetailEntities = (List<StockRetrievalDetailEntity>) stockRetrievalDetailRepository.saveAll(detailEntryList);
+        if(!medicineMovementList.isEmpty()){
+            medicineMovementRepository.saveAll(medicineMovementList);
+        }
 
-        // Processing and saving Medicine Lots
-        List<MedicineLotEntity> medicineLotEntityList = createMedicineLotList(stockRetrievalRequestDTO, medicineCodeMap, now);
-        medicineLotRepository.saveAll(medicineLotEntityList);
-
-        // Processing and saving Medicine Movements
-        List<MedicineMovementEntity> medicineMovementEntityList = createMedicineMovementList(medicineLotEntityList, retrievalDetailEntities, stockRetrievalRequestDTO.getStoreId(), now);
-        medicineMovementRepository.saveAll(medicineMovementEntityList);
-
-        // Preparing the response
-        return new StockRetrievalResponseDTO(stockRetrieval.getId());
+        return new StockRetrievalResponseDTO(stockRetrieval.getId(),true);
     }
 
-    private List<StockRetrievalDetailEntity> createDetailEntryList(StockRetrievalRequestDTO stockRetrievalRequestDTO, Integer stockRetrievalId, Date now) {
-        return stockRetrievalRequestDTO.getMedicineList().stream().map(item -> {
-            StockRetrievalDetailEntity detailEntry = new StockRetrievalDetailEntity();
-            detailEntry.setMedicineId(item.getMedicineId());
-            detailEntry.setQty(item.getQty());
-            detailEntry.setStockRetrievalId(stockRetrievalId);
-            detailEntry.setCreatedDate(now);
-            detailEntry.setUpdatedDate(now);
-            return detailEntry;
-        }).collect(Collectors.toList());
-    }
 
-    private List<MedicineLotEntity> createMedicineLotList(StockRetrievalRequestDTO stockRetrievalRequestDTO, Map<Integer, String> medicineCodeMap, Date now) {
-        return stockRetrievalRequestDTO.getExpireDates().stream().map(expireDate -> {
-            String code = medicineCodeMap.getOrDefault(expireDate.getMedicineId(), "NA_CODE");
-            MedicineLotEntity lot = new MedicineLotEntity();
-            lot.setLotNum(code + "-" + expireDate.getExpireDate());
-            lot.setQty(expireDate.getQty());
-            lot.setMedicineId(expireDate.getMedicineId());
-            lot.setExpireDate(expireDate.getExpireDate());
-            lot.setCreatedDate(now);
-            lot.setUpdatedDate(now);
-            return lot;
-        }).collect(Collectors.toList());
-    }
-    private List<MedicineMovementEntity> createMedicineMovementList(List<MedicineLotEntity> medicineLotEntityList, List<StockRetrievalDetailEntity> retrievalDetailEntities, Integer storeId, Date now) {
-        return medicineLotEntityList.stream().map(lot -> {
-            MedicineMovementEntity mEntity = new MedicineMovementEntity();
-            mEntity.setInQty(lot.getQty());
-            mEntity.setDescription(TransactionDescriptions.AU_STOCK_RECEIVE.getDescription());
-            mEntity.setOutQty(0);
-            mEntity.setLotId(lot.getId());
-            mEntity.setMedicineId(lot.getMedicineId());
-            mEntity.setCreatedDate(now);
-            mEntity.setUpdatedDate(now);
-            mEntity.setReferenceId(retrievalDetailEntities.stream()
-                    .filter(en -> en.getMedicineId().equals(lot.getMedicineId()))
-                    .findFirst()
-                    .map(StockRetrievalDetailEntity::getId)
-                    .orElseThrow(() -> new IllegalStateException("No matching StockRetrievalDetailEntity for Medicine ID " + lot.getMedicineId() + " found")));
-            mEntity.setStoreId(storeId);
-            return mEntity;
-        }).collect(Collectors.toCollection(LinkedList::new));
-    }
 }
