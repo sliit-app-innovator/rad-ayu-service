@@ -31,13 +31,13 @@ public class WardServiceImpl implements WardService {
     }
 
     @Override
-    public List<WardDTO> searchWard(int typeId) {
+    public List<WardDTO> searchWard(String description) {
         List<WardDTO> entityList = new ArrayList<>();
 
-        if (typeId == 0) {
+        if (description.isEmpty()) {
             wardRepository.findAll().forEach(wardEntity -> entityList.add(wardEntity.toDTO()));
         } else {
-            wardRepository.findByWardType(typeId).forEach(wardEntity -> entityList.add(wardEntity.toDTO()));
+            wardRepository.findByWardDescription(description).forEach(wardEntity -> entityList.add(wardEntity.toDTO()));
         }
         return entityList;
     }

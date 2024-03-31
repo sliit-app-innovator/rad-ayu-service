@@ -42,8 +42,7 @@ public class StockServiceImpl implements StockService {
         // Mapping and saving the StockRetrievalEntity
         StockRetrievalEntity stockRetrieval = stockRetrievalRepository.save(
                 modelMapper.map(stockRetrievalRequestDTO, StockRetrievalEntity.class));
-
-            List<MedicineMovementEntity> medicineMovementList = new LinkedList<>();
+        List<MedicineMovementEntity> medicineMovementList = new LinkedList<>();
 
         stockRetrievalRequestDTO.getMedicineList().forEach(item -> {
             StockRetrievalDetailEntity  stockRetrievalDetailEntity = new StockRetrievalDetailEntity();

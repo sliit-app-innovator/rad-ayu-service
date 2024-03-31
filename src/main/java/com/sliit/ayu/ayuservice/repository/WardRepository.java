@@ -18,4 +18,8 @@ public interface WardRepository extends CrudRepository<WardEntity, Integer>, Jpa
     @Transactional
     @Query(value =DbQuery.SEARCH_WARD_BY_WARD_TYPE_QUERY, nativeQuery = true)
     List<WardEntity> findByWardType(int typeId);
+
+    @Transactional
+    @Query(value =DbQuery.SEARCH_WARD_BY_DESCRIPTION_QUERY, nativeQuery = true)
+    List<WardEntity> findByWardDescription(String description);
 }

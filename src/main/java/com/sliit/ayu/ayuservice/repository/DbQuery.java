@@ -27,4 +27,5 @@ public class DbQuery {
     public static final String SEARCH_WARD_BY_WARD_NUMBER_QUERY = "SELECT * FROM ward WHERE ward_number = :wardNumber";
 
     public static final String SEARCH_WARD_BY_WARD_TYPE_QUERY = "SELECT * FROM ward WHERE type_id = :typeId";
+    public static final String SEARCH_WARD_BY_DESCRIPTION_QUERY = "SELECT * FROM ward WHERE description  like %:description%";
 }

@@ -33,7 +33,8 @@ public class WardController {
     @GetMapping("/ward")
     public ResponseEntity<List<WardDTO>> searchWard(@RequestHeader Map<String, String> headers){
         log.info("User search request correlation-id : {}", headers.get(Constants.HEADER_CORRELATION_ID));
-        return ResponseEntity.status(HttpStatus.OK).body(wardService.searchWard(Integer.parseInt(headers.get("typeid"))));
+
+        return ResponseEntity.status(HttpStatus.OK).body(wardService.searchWard(headers.get("description")));
     }
 
     @GetMapping("/ward/{wardId}")
