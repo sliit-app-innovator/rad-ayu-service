@@ -28,4 +28,5 @@ public class DbQuery {
 
     public static final String SEARCH_WARD_BY_WARD_TYPE_QUERY = "SELECT * FROM ward WHERE type_id = :typeId";
     public static final String SEARCH_WARD_BY_DESCRIPTION_QUERY = "SELECT * FROM ward WHERE description  like %:description%";
+    public static final String SEARCH_LOTS_BY_STORE_MEDICINE_QUERY = "SELECT s.lot_id , sum(s.in_qty) - sum(s.out_qty) AS quantity , m.expire_date, m.lot_num,m.created_date AS purchased_date FROM medicine_movement s INNER JOIN  medicine_lot m ON s.lot_id=m.id WHERE s.store_id=:storeId AND s.medicine_id=:medicineId GROUP BY s.lot_id having quantity > 0 order by m.expire_date desc";
 }

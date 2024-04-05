@@ -15,4 +15,9 @@ public class StockRetrievalResponseDTO {
         stockReceivedId =id;
         status =stst;
     }
+
+    public boolean getSuccess() {
+        return  status;
+    }
+
 }

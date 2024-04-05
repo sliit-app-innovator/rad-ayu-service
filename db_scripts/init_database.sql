@@ -174,17 +174,40 @@ ENGINE = InnoDB;
 -- -----------------------------------------------------
 -- Table `ayu`.`medicine_issue`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `ayu`.`medicine_issue` (
-  `id` INT NOT NULL AUTO_INCREMENT,
-  `medicine_id` INT NOT NULL,
-  `store_id` INT NULL COMMENT 'Kalka, choorna',
-  `doctor_name` VARCHAR(45) NULL,
-  `issued_by` VARCHAR(100) NULL,
-  `issue_type` INT NOT NULL COMMENT ' issue_type OPD 0 or ward 1',
-  `created_date` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `updated_date` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  PRIMARY KEY (`id`))
-ENGINE = InnoDB;
+CREATE TABLE `medicine_issue` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `date` datetime DEFAULT NULL,
+  `store_id` int NOT NULL,
+  `doctor` varchar(45) DEFAULT NULL,
+  `issued_by` varchar(100) DEFAULT NULL,
+  `issue_type` int NOT NULL,
+  `created_date` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_date` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `patient` varchar(45) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `FK_issue_store_idx` (`store_id`),
+  CONSTRAINT `FK_issue_store` FOREIGN KEY (`store_id`) REFERENCES `store` (`id`)
+) ENGINE=InnoDB ;
+
+
+-- -----------------------------------------------------
+-- Table `ayu`.`medicine_issue_details`
+-- -----------------------------------------------------
+
+CREATE TABLE `medicine_issue_details` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `medicine_issue_id` int NOT NULL,
+  `medicine_id` int NOT NULL,
+  `qty` int NOT NULL,
+  `created_date` timestamp NULL DEFAULT NULL,
+  `updated_date` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `FK_issue_medicine_idx` (`medicine_id`),
+  KEY `FK_issue_details_idx` (`medicine_issue_id`),
+  CONSTRAINT `FK_issue_details` FOREIGN KEY (`medicine_issue_id`) REFERENCES `medicine_issue` (`id`),
+  CONSTRAINT `FK_issue_medicine` FOREIGN KEY (`medicine_id`) REFERENCES `medicine` (`id`)
+) ENGINE=InnoDB ;
+
 
 
 -- -----------------------------------------------------

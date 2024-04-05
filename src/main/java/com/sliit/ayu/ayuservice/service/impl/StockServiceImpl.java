@@ -1,5 +1,7 @@
 package com.sliit.ayu.ayuservice.service.impl;
 import com.sliit.ayu.ayuservice.constants.TransactionDescriptions;
+import com.sliit.ayu.ayuservice.dto.LotsResponseDto;
+import com.sliit.ayu.ayuservice.dto.StockMedicineIssueRequestDTO;
 import com.sliit.ayu.ayuservice.dto.StockRetrievalRequestDTO;
 import com.sliit.ayu.ayuservice.dto.StockRetrievalResponseDTO;
 import com.sliit.ayu.ayuservice.model.*;
@@ -32,6 +34,13 @@ public class StockServiceImpl implements StockService {
     private StockRetrievalRepository stockRetrievalRepository;
     @Autowired
     private StockRetrievalDetailRepository stockRetrievalDetailRepository;
+
+    @Autowired
+    private MedicineIssueRepository stockIssueRepository;
+
+    @Autowired
+    private MedicineIssueDetailRepository stockIssueDetailRepository;
+
     @Override
     @Transactional
     public StockRetrievalResponseDTO stockRetrieval(StockRetrievalRequestDTO stockRetrievalRequestDTO) {
@@ -97,6 +106,75 @@ public class StockServiceImpl implements StockService {
         }
 
         return new StockRetrievalResponseDTO(stockRetrieval.getId(),true);
+    }
+
+    @Override
+    public List<LotsResponseDto> getLotsByStoreAndMedicine(int storeId, int medicineId) {
+        List<Object[]> results =  medicineMovementRepository.findAllByStoreIdAndMedicineId(storeId,medicineId);
+        return results.stream().map(result -> new LotsResponseDto(
+                Integer.parseInt(result[0].toString()),
+                Integer.parseInt(result[1].toString()),
+                formatter.format((Date) result[2]),
+                (String) result[3],
+                formatter.format((Date) result[4])
+
+        )).collect(Collectors.toList());
+
+    }
+
+    @Override
+    @Transactional
+    public StockRetrievalResponseDTO stockMedicineIssue(StockMedicineIssueRequestDTO stockMedicineIssueRequestDTO) {
+        Date now = Calendar.getInstance().getTime();
+        stockMedicineIssueRequestDTO.setCreatedDate(now);
+        stockMedicineIssueRequestDTO.setUpdatedDate(now);
+
+        MedicineIssueEntity stockIssue = stockIssueRepository.save(
+                modelMapper.map(stockMedicineIssueRequestDTO, MedicineIssueEntity.class));
+        List<MedicineMovementEntity> medicineMovementList = new LinkedList<>();
+        stockMedicineIssueRequestDTO.getMedicineList().stream().forEach(item -> {
+
+            MedicineIssueDetailEntity stockIssueDetailEntity = new MedicineIssueDetailEntity();
+            stockIssueDetailEntity.setMedicineId(item.getId());
+            stockIssueDetailEntity.setMedicineIssueId(stockIssue.getId());
+            stockIssueDetailEntity.setQty(item.getQty());
+            stockIssueDetailEntity.setCreatedDate(now);
+            stockIssueDetailEntity.setUpdatedDate(now);
+            MedicineIssueDetailEntity itemDetails = stockIssueDetailRepository.save(stockIssueDetailEntity);
+            if(item.getIsLot() && !item.getLots().isEmpty()){
+                item.getLots().forEach(lot-> {
+                    MedicineMovementEntity medicineMovement = new MedicineMovementEntity();
+                    medicineMovement.setMedicineId(item.getId());
+                    medicineMovement.setDescription(TransactionDescriptions.AU_STOCK_ISSUE_TO_PATIENT.getDescription());
+                    medicineMovement.setInQty(0);
+                    medicineMovement.setOutQty(lot.getIssueQty());
+                    medicineMovement.setLotId(lot.getLotId());
+                    medicineMovement.setStoreId(stockMedicineIssueRequestDTO.getStoreId());
+                    medicineMovement.setReferenceId(itemDetails.getId());
+                    medicineMovement.setCreatedDate(now);
+                    medicineMovement.setUpdatedDate(now);
+                    medicineMovementList.add(medicineMovement);
+                });
+            }
+            else
+            {
+                MedicineMovementEntity medicineMovement = new MedicineMovementEntity();
+                medicineMovement.setMedicineId(item.getId());
+                medicineMovement.setDescription(TransactionDescriptions.AU_STOCK_ISSUE_TO_PATIENT.getDescription());
+                medicineMovement.setInQty(0);
+                medicineMovement.setOutQty(item.getQty());
+                medicineMovement.setStoreId(stockMedicineIssueRequestDTO.getStoreId());
+                medicineMovement.setReferenceId(itemDetails.getId());
+                medicineMovement.setCreatedDate(now);
+                medicineMovement.setUpdatedDate(now);
+                medicineMovementList.add(medicineMovement);
+            }
+        });
+
+        if(!medicineMovementList.isEmpty()){
+            medicineMovementRepository.saveAll(medicineMovementList);
+        }
+        return new StockRetrievalResponseDTO(stockIssue.getId(),true);
     }
 
 
