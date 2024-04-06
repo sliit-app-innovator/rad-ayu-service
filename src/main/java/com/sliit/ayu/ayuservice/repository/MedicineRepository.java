@@ -28,4 +28,8 @@ public interface MedicineRepository extends JpaRepository<MedicineEntity, Intege
         @Transactional
         @Query(value =DbQuery.SEARCH_MEDICINE_BY_NAME_OR_CODE_COUNT, nativeQuery = true)
         Integer searchPaginationCount(String search);
+
+        @Transactional
+        @Query(value =DbQuery.SEARCH_MEDICINE_STOCK_BY_STORE_MEDICINE_NAME_QUERY_COUNT, nativeQuery = true)
+        Integer findAllByStoreIdAndNameCount(String search, int storeId);
 }

@@ -98,23 +98,23 @@ ENGINE = InnoDB;
 -- -----------------------------------------------------
 -- Table `ayu`.`medicine`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `ayu`.`medicine` (
-  `id` INT NOT NULL AUTO_INCREMENT,
-  `name` VARCHAR(255) NOT NULL,
-  `code` VARCHAR(45) NULL,
-  `type` INT NOT NULL COMMENT ' row matirial 0 or finish medicine 1',
-  `medicine_type` INT NOT NULL COMMENT 'Kalka, choorna',
-  `created_date` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `updated_date` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  PRIMARY KEY (`id`, `medicine_type`),
-  UNIQUE INDEX `name_UNIQUE` (`name` ASC) VISIBLE,
-  INDEX `mditype_idx` (`medicine_type` ASC) VISIBLE,
-  CONSTRAINT `mditype`
-    FOREIGN KEY (`medicine_type`)
-    REFERENCES `ayu`.`medicine_type` (`id`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION)
-ENGINE = InnoDB;
+CREATE TABLE `medicine` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) NOT NULL,
+  `code` varchar(45) DEFAULT NULL,
+  `type` int NOT NULL,
+  `medicine_type` int NOT NULL,
+  `created_date` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_date` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `unit` int DEFAULT NULL,
+  `is_expire` bit(1) DEFAULT NULL,
+  `reorder_level` int NOT NULL DEFAULT '0',
+  PRIMARY KEY (`id`,`medicine_type`),
+  UNIQUE KEY `name_UNIQUE` (`name`),
+  KEY `mditype_idx` (`medicine_type`),
+  CONSTRAINT `mditype` FOREIGN KEY (`medicine_type`) REFERENCES `medicine_type` (`id`)
+) ENGINE=InnoDB  ;
+
 
 
 -- -----------------------------------------------------

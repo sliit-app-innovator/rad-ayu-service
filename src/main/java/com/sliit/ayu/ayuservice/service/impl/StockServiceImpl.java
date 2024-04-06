@@ -1,9 +1,6 @@
 package com.sliit.ayu.ayuservice.service.impl;
 import com.sliit.ayu.ayuservice.constants.TransactionDescriptions;
-import com.sliit.ayu.ayuservice.dto.LotsResponseDto;
-import com.sliit.ayu.ayuservice.dto.StockMedicineIssueRequestDTO;
-import com.sliit.ayu.ayuservice.dto.StockRetrievalRequestDTO;
-import com.sliit.ayu.ayuservice.dto.StockRetrievalResponseDTO;
+import com.sliit.ayu.ayuservice.dto.*;
 import com.sliit.ayu.ayuservice.model.*;
 import com.sliit.ayu.ayuservice.repository.*;
 import com.sliit.ayu.ayuservice.service.StockService;
@@ -109,8 +106,8 @@ public class StockServiceImpl implements StockService {
     }
 
     @Override
-    public List<LotsResponseDto> getLotsByStoreAndMedicine(int storeId, int medicineId) {
-        List<Object[]> results =  medicineMovementRepository.findAllByStoreIdAndMedicineId(storeId,medicineId);
+    public List<LotsResponseDto> getLotsByStoreAndMedicine(LotsRequestDTO lotsRequestDTO) {
+        List<Object[]> results =  medicineMovementRepository.findAllByStoreIdAndMedicineId(lotsRequestDTO.getStoreId(),lotsRequestDTO.getMedicineId());
         return results.stream().map(result -> new LotsResponseDto(
                 Integer.parseInt(result[0].toString()),
                 Integer.parseInt(result[1].toString()),
@@ -175,6 +172,33 @@ public class StockServiceImpl implements StockService {
             medicineMovementRepository.saveAll(medicineMovementList);
         }
         return new StockRetrievalResponseDTO(stockIssue.getId(),true);
+    }
+
+    @Override
+    public MedicineStockResponseDTO getMedicinesWithStock(StockInquiryRequestDTO stockInqueryRequestDTO) {
+        int limit = stockInqueryRequestDTO.getPerPage();
+        int skip = (stockInqueryRequestDTO.getPage() - 1) * stockInqueryRequestDTO.getPerPage();
+        MedicineStockResponseDTO responseDTO = new MedicineStockResponseDTO();
+        List<Object[]> results =  medicineMovementRepository.findAllByStoreIdAndName(stockInqueryRequestDTO.getStoreId(),stockInqueryRequestDTO.getSearch(),limit,skip);
+        List<MedicineStockDTO> medicineStockResponseDTOList = results.stream().map(result -> new MedicineStockDTO(
+                Integer.parseInt(result[0].toString()),
+                (String) result[1],
+                (String) result[2],
+                Integer.parseInt(result[3].toString()),
+                Integer.parseInt(result[4].toString()),
+                (String) result[5],
+                Integer.parseInt(result[6].toString()),
+                (String) result[7],
+                Integer.parseInt(result[8].toString())
+        )).collect(Collectors.toList());
+
+        responseDTO.setData(medicineStockResponseDTOList);
+        responseDTO.setPerPage(stockInqueryRequestDTO.getPerPage());
+        responseDTO.setPage(stockInqueryRequestDTO.getPage());
+        responseDTO.setTotal(medicineRepository.findAllByStoreIdAndNameCount(stockInqueryRequestDTO.getSearch(),stockInqueryRequestDTO.getStoreId()));
+        responseDTO.setTotalPages(responseDTO.getTotal()/stockInqueryRequestDTO.getPage());
+
+        return responseDTO;
     }
 
 

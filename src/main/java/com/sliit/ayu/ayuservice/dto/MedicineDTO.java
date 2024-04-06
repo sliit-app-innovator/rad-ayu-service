@@ -51,8 +51,12 @@ public class MedicineDTO {
 
     @JsonProperty("isExpire")
     private Boolean isExpire;
+
+    @JsonProperty("reorder_level")
+    private Integer reorderLevel;
+
     public MedicineDTO(){}
-    public MedicineDTO(Integer id, String name, String code, Integer type, Integer medicineType, Integer unit, String uname, Date createdDate, Date updatedDate, Boolean isExpire) {
+    public MedicineDTO(Integer id, String name, String code, Integer type, Integer medicineType, Integer unit, String uname, Date createdDate, Date updatedDate, Boolean isExpire,Integer reorderLevel) {
         this.id = id;
         this.name = name;
         this.code = code;
@@ -63,6 +67,7 @@ public class MedicineDTO {
         this.createdDate = createdDate;
         this.updatedDate = updatedDate;
         this.isExpire = isExpire;
+        this.reorderLevel = reorderLevel;
     }
 
     public MedicineEntity toEntity() {
@@ -73,6 +78,7 @@ public class MedicineDTO {
         entity.setUnit(this.unit);
         entity.setType(this.type);
         entity.setIsExpire(this.isExpire);
+        entity.setReorderLevel(this.reorderLevel);
         entity.setMedicineType(this.medicineType);
         entity.setCreatedDate(this.createdDate);
         entity.setUpdatedDate(this.updatedDate);

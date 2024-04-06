@@ -46,6 +46,9 @@ public class MedicineEntity {
     @Column(name ="is_expire")
     private Boolean isExpire;
 
+    @Column(name ="reorder_level")
+    private Integer reorderLevel;
+
     public MedicineDTO toDTO() {
         MedicineDTO medicineDTO = new MedicineDTO();
         medicineDTO.setId(this.id);

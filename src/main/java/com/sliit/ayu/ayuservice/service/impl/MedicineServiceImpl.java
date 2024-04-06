@@ -9,6 +9,7 @@ import com.sliit.ayu.ayuservice.repository.MedicineRepository;
 import com.sliit.ayu.ayuservice.repository.MedicineTypeRepository;
 import com.sliit.ayu.ayuservice.service.MedicineService;
 import lombok.extern.slf4j.Slf4j;
+import org.hibernate.Internal;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -190,7 +191,8 @@ public class MedicineServiceImpl implements MedicineService {
                 Optional.ofNullable(row[6]).map(String.class::cast).orElse(null),
                 (Date) row[7], // Assuming date fields are always non-null
                 (Date) row[8],
-                Optional.ofNullable(row[9]).map(Boolean.class::cast).orElse(null)
+                Optional.ofNullable(row[9]).map(Boolean.class::cast).orElse(null),
+                Optional.ofNullable(row[10]).map(Integer.class::cast).orElse(null)
         )).collect(Collectors.toList());
 
         MedicineSearchResponseDTO responseDTO = new MedicineSearchResponseDTO();

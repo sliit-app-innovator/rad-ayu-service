@@ -13,4 +13,8 @@ public interface MedicineMovementRepository extends JpaRepository<MedicineMoveme
     @Transactional
     @Query(value =DbQuery.SEARCH_LOTS_BY_STORE_MEDICINE_QUERY, nativeQuery = true)
     List<Object[]> findAllByStoreIdAndMedicineId(int storeId, int medicineId);
+
+    @Transactional
+    @Query(value =DbQuery.SEARCH_MEDICINE_STOCK_BY_STORE_MEDICINE_NAME_QUERY, nativeQuery = true)
+    List<Object[]> findAllByStoreIdAndName(int storeId, String search , int limit, int skip);
 }
