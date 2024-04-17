@@ -9,7 +9,7 @@
 	</parent>
 	<groupId>com.sliit.ayu</groupId>
 	<artifactId>ayu-service</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>0.0.1</version>
 	<name>ayu-service</name>
 	<packaging>jar</packaging>
 	<description>Service implementation for ayu including models and repositories </description>

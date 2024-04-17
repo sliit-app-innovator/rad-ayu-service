@@ -9,8 +9,10 @@ import java.util.Date;
 @AllArgsConstructor
 public class LotsResponseDto {
     private int lotId;
+    private String store;
     private int quantity;
     private String expiryDate;
     private String lotNum;
     private String purchaseDate;
+
 }

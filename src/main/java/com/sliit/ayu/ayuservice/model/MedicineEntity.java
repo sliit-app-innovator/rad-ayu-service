@@ -61,6 +61,7 @@ public class MedicineEntity {
         medicineDTO.setMedicineType(this.medicineType);
         medicineDTO.setCreatedDate(this.createdDate);
         medicineDTO.setUpdatedDate(this.updatedDate);
+        medicineDTO.setReorderLevel(this.reorderLevel);
         return medicineDTO;
     }
 }

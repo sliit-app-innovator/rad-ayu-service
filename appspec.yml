@@ -1,0 +1,14 @@
+version: 0.0
+os: linux
+files:
+  - source: /
+    destination: /home/ubuntu/ayu-app
+hooks:
+  BeforeInstall:
+    - location: cleanup_before_install.sh
+      timeout: 30
+      runas: ubuntu
+  AfterInstall:
+    - location: start_application.sh
+      timeout: 30
+      runas: ubuntu

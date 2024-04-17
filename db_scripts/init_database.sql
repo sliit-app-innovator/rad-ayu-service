@@ -226,6 +226,14 @@ ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
+-- Table `ayu`.`refresh_tokens`
+-- -----------------------------------------------------
+CREATE TABLE refresh_tokens (
+    username VARCHAR(255) PRIMARY KEY,
+    refresh_token VARCHAR(255) NOT NULL
+);
+
+-- -----------------------------------------------------
 -- Table `ayu`.`medicine_moment`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `ayu`.`medicine_moment` (
@@ -249,7 +257,33 @@ CREATE TABLE IF NOT EXISTS `ayu`.`medicine_moment` (
  )
 ENGINE = InnoDB;
 
+DELIMITER $$
+CREATE   FUNCTION `get_stock_by_item`(medicine_id_param INT, store_id_param INT) RETURNS int
+    READS SQL DATA
+    DETERMINISTIC
+BEGIN
+    DECLARE total_quantity INTEGER;
+    IF store_id_param IS NULL OR store_id_param='' THEN
+        -- Logic when storeId is not provided
+        SELECT IFNULL(SUM(in_qty) - SUM(out_qty), 0) INTO total_quantity
+        FROM medicine_movement
+        WHERE medicine_id = medicine_id_param;
+    ELSE
+        -- Logic when storeId is provided
+        SELECT IFNULL(SUM(in_qty) - SUM(out_qty), 0) INTO total_quantity
+        FROM medicine_movement
+        WHERE medicine_id = medicine_id_param AND store_id = store_id_param;
+    END IF;
+    RETURN total_quantity;
+END$$
+DELIMITER ;
+
+
+
 
 SET SQL_MODE=@OLD_SQL_MODE;
 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;
+
+
+

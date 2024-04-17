@@ -1,5 +1,11 @@
 use ayu;
 
+INSERT INTO store_type(name) VALUES('WARD');
+INSERT INTO store_type(name) VALUES('OPD');
+INSERT INTO store_type(name) VALUES('PHARMACY');
+INSERT INTO store_type(name) VALUES('STORES');
+
+
 INSERT INTO medicine_type (name) VALUES('Arishta');
 INSERT INTO medicine_type (name) VALUES('Choorna');
 INSERT INTO medicine_type (name) VALUES('Modaka');

@@ -29,6 +29,8 @@ public class MedicineUpdateDTO {
 
     private Boolean isExpire;
 
+    private Integer reorderLevel;
+
     public MedicineEntity toEntity() {
         MedicineEntity entity = new MedicineEntity();
         entity.setId(this.id);

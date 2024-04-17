@@ -1,0 +1,33 @@
+version: 0.2
+
+phases:
+  install:
+    runtime-versions:
+      java: corretto17
+    commands:
+      - echo Installing Maven
+      - apt-get update -y
+      - apt-get install maven -y
+
+  pre_build:
+    commands:
+      - echo Compile the source code.
+      - mvn clean install -DskipTests
+
+  build:
+    commands:
+      - echo Build the Spring Boot Application
+      - mvn package -DskipTests
+
+  post_build:
+    commands:
+      - echo Build completed on `date`
+
+artifacts:
+  files:
+    - target/*.jar
+  discard-paths: yes
+
+cache:
+  paths:
+    - '/root/.m2/**/*'

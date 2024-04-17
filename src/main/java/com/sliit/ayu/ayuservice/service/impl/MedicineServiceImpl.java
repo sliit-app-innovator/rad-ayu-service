@@ -86,7 +86,7 @@ public class MedicineServiceImpl implements MedicineService {
                 medicineEntity.setUnit(medicineDTO.getUnit());
             }
 
-
+            medicineEntity.setReorderLevel(medicineDTO.getReorderLevel());
             medicineEntity.setIsExpire(medicineDTO.getIsExpire());
 
             medicineEntity.setUpdatedDate(new Date());

@@ -52,7 +52,7 @@ public class MedicineDTO {
     @JsonProperty("isExpire")
     private Boolean isExpire;
 
-    @JsonProperty("reorder_level")
+    @JsonProperty("reorderLevel")
     private Integer reorderLevel;
 
     public MedicineDTO(){}

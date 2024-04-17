@@ -110,10 +110,11 @@ public class StockServiceImpl implements StockService {
         List<Object[]> results =  medicineMovementRepository.findAllByStoreIdAndMedicineId(lotsRequestDTO.getStoreId(),lotsRequestDTO.getMedicineId());
         return results.stream().map(result -> new LotsResponseDto(
                 Integer.parseInt(result[0].toString()),
-                Integer.parseInt(result[1].toString()),
-                formatter.format((Date) result[2]),
-                (String) result[3],
-                formatter.format((Date) result[4])
+                result[1].toString(),
+                Integer.parseInt(result[2].toString()),
+                formatter.format((Date) result[3]),
+                (String) result[4],
+                formatter.format((Date) result[5])
 
         )).collect(Collectors.toList());
 
@@ -195,7 +196,7 @@ public class StockServiceImpl implements StockService {
         responseDTO.setData(medicineStockResponseDTOList);
         responseDTO.setPerPage(stockInqueryRequestDTO.getPerPage());
         responseDTO.setPage(stockInqueryRequestDTO.getPage());
-        responseDTO.setTotal(medicineRepository.findAllByStoreIdAndNameCount(stockInqueryRequestDTO.getSearch(),stockInqueryRequestDTO.getStoreId()));
+        responseDTO.setTotal(medicineRepository.findAllByStoreIdAndNameCount(stockInqueryRequestDTO.getSearch()));
         responseDTO.setTotalPages(responseDTO.getTotal()/stockInqueryRequestDTO.getPage());
 
         return responseDTO;
