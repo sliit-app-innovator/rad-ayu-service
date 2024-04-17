@@ -26,6 +26,9 @@ phases:
 artifacts:
   files:
     - target/*.jar
+    - appspec.yml
+    - cleanup_before_install.sh
+    - start_application.sh
   discard-paths: yes
 
 cache:
