@@ -1,6 +1,6 @@
 package com.sliit.ayu.ayuservice.service.impl;
 
-import com.sliit.ayu.ayuservice.Utils;
+import com.sliit.ayu.ayuservice.utils.Utils;
 import com.sliit.ayu.ayuservice.constants.ErrorCode;
 import com.sliit.ayu.ayuservice.constants.OrderStatus;
 import com.sliit.ayu.ayuservice.dto.StockTransferDTO;
@@ -19,7 +19,6 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 public class StockTransferServiceImpl implements StockTransferService {
