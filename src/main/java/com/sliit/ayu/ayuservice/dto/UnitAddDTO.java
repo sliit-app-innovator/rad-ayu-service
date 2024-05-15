@@ -5,9 +5,12 @@ import java.util.Date;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.sliit.ayu.ayuservice.model.UnitAddEntity;
 
+import com.sliit.ayu.ayuservice.model.UnitEntity;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
+import lombok.Data;
 
+@Data
 public class UnitAddDTO {
 
 	private Integer id;
@@ -26,13 +29,14 @@ public class UnitAddDTO {
     @JsonProperty("updated_date")
     private Date updatedDate;
 
-    public UnitAddEntity toUnitEntity() {
-        UnitAddEntity unitentity = new UnitAddEntity();
+    public UnitEntity toEntity() {
+        UnitEntity unitentity = new UnitEntity();
         unitentity.setId(this.id);
         unitentity.setCode(this.code);
         unitentity.setUnit(this.unit);
         unitentity.setCreatedDate(this.createdDate);
         unitentity.setUpdatedDate(this.updatedDate);
         return unitentity;
+    }
 }
 }

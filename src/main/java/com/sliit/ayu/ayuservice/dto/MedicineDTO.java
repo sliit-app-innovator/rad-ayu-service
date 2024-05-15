@@ -12,6 +12,7 @@ import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
 import java.util.Date;
+import java.util.List;
 
 
 @Data
@@ -69,6 +70,19 @@ public class MedicineDTO {
         this.isExpire = isExpire;
         this.reorderLevel = reorderLevel;
     }
+
+      public MedicineDTO(MedicineEntity entity) {
+            this.id = entity.getId();
+            this.name = entity.getName();
+            this.code = entity.getCode();
+            this.type = entity.getType();
+            this.medicineType = entity.getMedicineType();
+            this.unit = entity.getUnit();
+            this.createdDate = entity.getCreatedDate();
+            this.updatedDate = entity.getUpdatedDate();
+            this.isExpire = entity.getIsExpire();
+            this.reorderLevel = entity.getReorderLevel();
+        }
 
     public MedicineEntity toEntity() {
         MedicineEntity entity = new MedicineEntity();

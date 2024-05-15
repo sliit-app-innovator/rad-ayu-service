@@ -1,6 +1,6 @@
 package com.sliit.ayu.ayuservice.service.impl;
 
-import com.sliit.ayu.ayuservice.Utils;
+import com.sliit.ayu.ayuservice.utils.Utils;
 import com.sliit.ayu.ayuservice.constants.ErrorCode;
 import com.sliit.ayu.ayuservice.constants.OrderStatus;
 import com.sliit.ayu.ayuservice.dto.StockRequisitionDTO;

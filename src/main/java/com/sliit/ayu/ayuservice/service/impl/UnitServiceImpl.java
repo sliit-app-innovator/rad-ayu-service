@@ -20,13 +20,13 @@ public class UnitServiceImpl implements UnitService {
 
     @Autowired
     private UnitRepository unitRepository;
+
     @Override
-    
-    
     public UnitAddDTO addUnit(UnitAddDTO unitAddDTO) {
     	unitAddDTO.setUpdatedDate(Calendar.getInstance().getTime());
     	unitAddDTO.setCreatedDate(Calendar.getInstance().getTime());
-        return UnitRepository.save(unitAddDTO.toEntity()).toDTO();
+        unitRepository.save(unitAddDTO.toEntity());
+        return null;
     }
     public List<UnitDTO> searchUnit(String unit) {
         Stream<UnitEntity> unitEntityStream;
