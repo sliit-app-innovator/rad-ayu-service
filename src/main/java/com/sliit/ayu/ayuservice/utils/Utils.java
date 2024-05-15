@@ -1,4 +1,4 @@
-package com.sliit.ayu.ayuservice;
+package com.sliit.ayu.ayuservice.utils;
 
 import java.time.LocalDateTime;
 

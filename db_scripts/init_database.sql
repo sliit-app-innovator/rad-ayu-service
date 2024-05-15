@@ -153,7 +153,7 @@ CREATE TABLE `ayu`.`stock_retrieval_detail` (
 
 
 -- -----------------------------------------------------
--- Table `ayu`.`stock_transfer`
+-- Table `ayu`.`stock_requisition`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `ayu`.`stock_requisition` (
   `id` INT NOT NULL AUTO_INCREMENT,
@@ -170,6 +170,24 @@ CREATE TABLE IF NOT EXISTS `ayu`.`stock_requisition` (
   PRIMARY KEY (`id`))
 ENGINE = InnoDB;
 
+
+-- -----------------------------------------------------
+-- Table `ayu`.`stock_transfer`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `ayu`.`stock_transfer` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `reference` VARCHAR(100) NULL COMMENT 'Generated order reference',
+  `date` DATETIME NOT NULL,
+  `from_store` INT NOT NULL,
+  `to_store` INT NOT NULL,
+  `requested_by` VARCHAR(100) NOT NULL COMMENT ' row matirial 0 or finish medicine 1',
+  `approved_by` VARCHAR(100) NOT NULL COMMENT ' row matirial 0 or finish medicine 1',
+  `description` VARCHAR(1000) NULL,
+  `statusId` INT NOT NULL,
+  `created_date` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_date` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`))
+ENGINE = InnoDB;
 
 -- -----------------------------------------------------
 -- Table `ayu`.`medicine_issue`
