@@ -273,6 +273,17 @@ CREATE TABLE IF NOT EXISTS `ayu`.`medicine_moment` (
    CONSTRAINT `fk_store` FOREIGN KEY (`store_id`) REFERENCES `store` (`id`),
    CONSTRAINT `medi_id` FOREIGN KEY (`medicine_id`) REFERENCES `medicine` (`id`)
  )
+
+ CREATE TABLE `months` (
+   `id` int NOT NULL,
+   `name` varchar(45) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+   PRIMARY KEY (`id`)
+ ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+
+INSERT INTO `months` VALUES (1,'Jan'),(2,'Feb'),(3,'Mar'),(4,'Apr'),(5,'May'),(6,'Jun'),(7,'Jul'),(8,'Aug'),(9,'Sep'),(10,'Oct'),(11,'Nov'),(12,'Dec');
+
+
 ENGINE = InnoDB;
 
 DELIMITER $$
@@ -296,6 +307,21 @@ BEGIN
 END$$
 DELIMITER ;
 
+
+DELIMITER $$
+CREATE   PROCEDURE `get_medicines_movement_by_id`(IN medicineId INT)
+BEGIN
+	WITH RECURSIVE mnth AS (
+	  SELECT 1 AS month
+	  UNION ALL
+	  SELECT month + 1 FROM mnth WHERE month < 12
+	)
+	SELECT month,name,
+	ifnull((select sum(qty) from stock_retrieval_detail where medicine_id=medicineId and month=month(created_date)),0) as receiving ,
+	ifnull((select sum(qty) from  medicine_issue_details where medicine_id=medicineId and month=month(created_date)),0) as issueing
+	FROM mnth inner join months m ON mnth.month=m.id;
+END$$
+DELIMITER ;
 
 
 
