@@ -11,7 +11,11 @@ import java.util.List;
 public interface UnitService {
     List<UnitDTO> searchUnit(String unit);
    
-    public UnitDTO addUnit(@Valid UnitDTO unitAddDTO);
+    UnitDTO addUnit(@Valid UnitDTO unitAddDTO);
 
     UnitDTO updateUnit(UnitDTO unitDTO);
+
+    UnitDTO getUnit(int id);
+
+    void deleteUnit(int id);
 }
