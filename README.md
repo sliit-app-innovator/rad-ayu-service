@@ -1,14 +1,7 @@
 # RAD Ayu Service
 
 This repository contains the RAD Ayu Service, a backend service developed in Java for handling various operations related to the Ayu application.
-
-## Table of Contents
-- [Installation](#installation)
-- [Usage](#usage)
-- [File Structure](#file-structure)
-- [Contributors](#contributors)
-- [License](#license)
-
+ 
 ## Installation
 
 ### Prerequisites
@@ -42,5 +35,5 @@ This repository contains the RAD Ayu Service, a backend service developed in Jav
 
 ## Usage
 - The service exposes various endpoints for managing the operations of the Ayu application.
-- Detailed API documentation is available in the [Link](https://3.134.58.170/swagger-ui/index.html) .
+- Detailed API documentation is available in the [Link](http://3.134.58.170:8080/swagger-ui/index.html) .
   
