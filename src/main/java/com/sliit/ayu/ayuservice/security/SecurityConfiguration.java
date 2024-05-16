@@ -36,7 +36,8 @@ public class SecurityConfiguration {
         http
                 .csrf(csrf -> csrf.disable()) // Disable CSRF protection as it's typically not needed for APIs
                 .authorizeRequests(authz -> authz
-                        .requestMatchers("/ayu/service/v1/auth/**").permitAll() // Allow access to any auth-related endpoints
+                        .requestMatchers("/ayu/service/v1/auth/**","/swagger-ui/**","/api-docs/**").permitAll() // Allow access to any auth-related endpoints
+
                         .anyRequest().authenticated() // All other requests must be authenticated
                 )
                 .exceptionHandling(httpSecurityExceptionHandlingConfigurer -> customAuthenticationEntryPoint())

@@ -21,3 +21,8 @@ INSERT INTO medicine_type (name) VALUES('Rasayana');
 INSERT INTO medicine_type (name) VALUES('Syrup');
 INSERT INTO medicine_type (name) VALUES('Thaila');
 INSERT INTO medicine_type (name) VALUES('Others');
+
+INSERT INTO unit(code,unit) VALUES('ml','Milli Liters');
+INSERT INTO unit(code,unit) VALUES('kg','Kilo Grams');
+INSERT INTO unit(code,unit) VALUES('pack','Packets');
+INSERT INTO unit(code,unit) VALUES('btl','Bottle');

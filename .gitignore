@@ -31,3 +31,6 @@ build/
 
 ### VS Code ###
 .vscode/
+
+### SKIP application.properties file ###
+!**/src/main/resources/application.properties

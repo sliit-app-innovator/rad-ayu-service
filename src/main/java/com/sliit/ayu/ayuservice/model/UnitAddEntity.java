@@ -32,8 +32,8 @@ public class UnitAddEntity {
     @Column(name = "updated_date", columnDefinition = "TIMESTAMP")
     private Date updatedDate;
 
-    public UnitAddDTO toDTO() {
-        UnitAddDTO dto = new UnitAddDTO();
+    public UnitDTO toDTO() {
+    	UnitDTO dto = new UnitDTO();
         dto.setId(this.id);
         dto.setCode(this.code);
         dto.setUnit(this.unit);

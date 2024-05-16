@@ -44,4 +44,11 @@ public class DbQuery {
             " INNER JOIN unit u ON m.unit=u.id INNER JOIN medicine_type mt ON m.medicine_type=mt.id \n" +
             "WHERE m.name LIKE %:search%  order by m.name LIMIT :limit OFFSET :skip";
     public static final String SEARCH_MEDICINE_STOCK_BY_STORE_MEDICINE_NAME_QUERY_COUNT = "SELECT  count(*) AS count  FROM medicine AS  m   INNER JOIN unit u ON m.unit=u.id INNER JOIN medicine_type mt ON m.medicine_type=mt.id  WHERE m.name LIKE %:search%  " ;
+
+    public static final String GET_MEDICINE_STOCK_BY_MEDICINE_ID_WITH_STORE="select s.id,s.name,get_stock_by_item(:medicineId,s.id) as stock from store s where get_stock_by_item(:medicineId,s.id) > 0";
+    public static final String GET_TOP_5_FAST_MOVING_MEDICINCES="SELECT medicine_id , (select name from medicine where id=md.medicine_id) as name,sum(qty) as issued FROM medicine_issue_details md group by medicine_id order by sum(qty) desc limit 5;";
+    public static final String GET_TOP_5_EXPIRING_MEDICINES="SELECT medicine_id, (select name from medicine where id=medicine_movement.medicine_id) as name , count(out_qty) as expired FROM medicine_movement  where description='STOCK_EXPIRED' GROUP BY medicine_id order by count(out_qty) desc limit 5";
+    public static final String GET_MEDICINE_MOVEMENT="CALL get_medicines_movement_by_id(:medicineId)";
+    public static final String GET_STOCK_REQS_BY_STATUS="SELECT count(*) as total , (select count(*) from stock_requisition where status_id=0) as pending FROM stock_requisition;";
+    public static final String GET_RE_ORDER_LEVELS="select count(id) as pending_reorder,(select count(*) from medicine ) as total_items  from medicine where get_stock_by_item(id,null) < reorder_level";
 }

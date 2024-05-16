@@ -12,12 +12,12 @@ phases:
   pre_build:
     commands:
       - echo Compile the source code.
-      - mvn clean install -DskipTests
+      - mvn -Pprod clean -DskipTests
 
   build:
     commands:
       - echo Build the Spring Boot Application
-      - mvn package -DskipTests
+      - mvn clean install -Dspring.profiles.active=prod
 
   post_build:
     commands:
