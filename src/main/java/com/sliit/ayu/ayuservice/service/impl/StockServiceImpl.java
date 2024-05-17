@@ -38,6 +38,13 @@ public class StockServiceImpl implements StockService {
     @Autowired
     private MedicineIssueDetailRepository stockIssueDetailRepository;
 
+    @Autowired
+    private UserRepository userRepository;
+
+    @Autowired
+    private EmailServiceImpl emailService;
+
+
     @Override
     @Transactional
     public StockRetrievalResponseDTO stockRetrieval(StockRetrievalRequestDTO stockRetrievalRequestDTO) {
@@ -101,7 +108,8 @@ public class StockServiceImpl implements StockService {
         if(!medicineMovementList.isEmpty()){
             medicineMovementRepository.saveAll(medicineMovementList);
         }
-
+        UserDTO user = userRepository.findByUsername(stockRetrievalRequestDTO.getRequestBy()).toDTO();
+        emailService.newInventory(user, stockRetrievalRequestDTO);
         return new StockRetrievalResponseDTO(stockRetrieval.getId(),true);
     }
 
