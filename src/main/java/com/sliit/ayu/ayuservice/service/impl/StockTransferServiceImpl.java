@@ -1,5 +1,7 @@
 package com.sliit.ayu.ayuservice.service.impl;
 
+import com.sliit.ayu.ayuservice.dto.UserDTO;
+import com.sliit.ayu.ayuservice.repository.UserRepository;
 import com.sliit.ayu.ayuservice.utils.Utils;
 import com.sliit.ayu.ayuservice.constants.ErrorCode;
 import com.sliit.ayu.ayuservice.constants.OrderStatus;
@@ -25,11 +27,18 @@ public class StockTransferServiceImpl implements StockTransferService {
 
     StockTransferRepository stockTransferRepository;
     StockTransferDetailRepository stockTransferDetailRepository;
+    private UserRepository userRepository;
+    private EmailServiceImpl emailService;
 
     @Autowired
-    public StockTransferServiceImpl(StockTransferRepository stockTransferRepository, StockTransferDetailRepository stockTransferDetailRepository) {
+    public StockTransferServiceImpl(StockTransferRepository stockTransferRepository,
+                                    StockTransferDetailRepository stockTransferDetailRepository,
+                                    EmailServiceImpl emailService,
+                                    UserRepository userRepository) {
         this.stockTransferRepository = stockTransferRepository;
         this.stockTransferDetailRepository = stockTransferDetailRepository;
+        this.userRepository = userRepository;
+        this.emailService = emailService;
     }
 
 
@@ -62,6 +71,8 @@ public class StockTransferServiceImpl implements StockTransferService {
                 transferItemDTOS.add(stockTransferDetailRepository.getByTransferIdAndMedicineId(transferId, item.getMedicineId()).toDTO());
             });
             stockTransferResponseDTO.setItems(transferItemDTOS);
+            UserDTO user = userRepository.findByUsername(stockTransferDTO.getRequestedBy()).toDTO();
+            emailService.sendOrderComplete(user, stockTransferDTO);
             return stockTransferResponseDTO;
         }
     }

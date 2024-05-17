@@ -1,5 +1,8 @@
 package com.sliit.ayu.ayuservice.service.impl;
 
+import com.sliit.ayu.ayuservice.dto.UserDTO;
+import com.sliit.ayu.ayuservice.model.UserEntity;
+import com.sliit.ayu.ayuservice.repository.UserRepository;
 import com.sliit.ayu.ayuservice.dto.StockRequestDTO;
 import com.sliit.ayu.ayuservice.utils.Utils;
 import com.sliit.ayu.ayuservice.constants.ErrorCode;
@@ -27,11 +30,18 @@ public class StockRequisitionServiceImpl implements StockRequisitionService {
 
     private StockRequisitionRepository stockRequisitionRepository;
     private StockRequisitionItemRepository stockRequisitionItemRepository;
+    private UserRepository userRepository;
+    private EmailServiceImpl emailService;
 
     @Autowired
-    public StockRequisitionServiceImpl(StockRequisitionRepository stockRequisitionRepository, StockRequisitionItemRepository stockRequisitionItemRepository) {
+    public StockRequisitionServiceImpl(StockRequisitionRepository stockRequisitionRepository,
+                                       StockRequisitionItemRepository stockRequisitionItemRepository,
+                                       EmailServiceImpl emailService,
+                                       UserRepository userRepository) {
         this.stockRequisitionRepository = stockRequisitionRepository;
         this.stockRequisitionItemRepository = stockRequisitionItemRepository;
+        this.userRepository = userRepository;
+        this.emailService = emailService;
     }
 
     @Override
@@ -60,6 +70,8 @@ public class StockRequisitionServiceImpl implements StockRequisitionService {
                 stockRequisitionItemRepository.save(item.toEntity());
                 requisitionItemDTOS.add(stockRequisitionItemRepository.getByRequisitionIdAndMedicineId(requisitionId, item.getMedicineId()).toDTO());
             });
+            UserDTO user = userRepository.findByUsername(stockRequisitionDTO.getRequestedBy()).toDTO();
+            emailService.sendOrderReq(user, stockRequisitionDTO);
             stockRequisitionResponseDTO.setItems(requisitionItemDTOS);
             return stockRequisitionResponseDTO;
         }
