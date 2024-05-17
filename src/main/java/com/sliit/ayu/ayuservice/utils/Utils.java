@@ -18,6 +18,9 @@ public class Utils {
     }
 
     public static String base64Decode(String enc) {
+        enc = enc.replace("-AAAAAAAAAA-", "");
+        enc = enc.replace("-BBBBBBBBBB-", "");
+        enc = enc.replace("-CCCCCCCCCC-", "");
         Base64.Decoder decoder = Base64.getDecoder();
         // Decode the Base64 encoded string
         byte[] decodedBytes = decoder.decode(enc);
