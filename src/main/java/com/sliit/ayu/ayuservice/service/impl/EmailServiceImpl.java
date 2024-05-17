@@ -11,6 +11,7 @@ import com.sliit.ayu.ayuservice.dto.StockRequisitionDTO;
 import com.sliit.ayu.ayuservice.dto.StockRetrievalRequestDTO;
 import com.sliit.ayu.ayuservice.dto.StockTransferDTO;
 import com.sliit.ayu.ayuservice.dto.UserDTO;
+import com.sliit.ayu.ayuservice.utils.Utils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -28,8 +29,8 @@ public class EmailServiceImpl {
     @Value("${admin.notification.email}")
     private String sender;
 
-    @Value("${sendgrid.api.key}")
-    private String sendGridApiKey;
+    @Value("${email.api.key}")
+    private String emailApiKey;
 
     @Value("${sendgrid.api.new.user.template}")
     private String newUserTemplate;
@@ -59,7 +60,7 @@ public class EmailServiceImpl {
 
             mail.addPersonalization(personalization);
 
-            SendGrid sg = new SendGrid(sendGridApiKey);
+            SendGrid sg = new SendGrid(Utils.base64Decode(emailApiKey));
             Request request = new Request();
 
             try {
@@ -92,7 +93,7 @@ public class EmailServiceImpl {
 
             mail.addPersonalization(personalization);
 
-            SendGrid sg = new SendGrid(sendGridApiKey);
+            SendGrid sg = new SendGrid(Utils.base64Decode(emailApiKey));
             Request request = new Request();
 
             try {
@@ -125,7 +126,7 @@ public class EmailServiceImpl {
 
             mail.addPersonalization(personalization);
 
-            SendGrid sg = new SendGrid(sendGridApiKey);
+            SendGrid sg = new SendGrid(Utils.base64Decode(emailApiKey));
             Request request = new Request();
 
             try {
@@ -158,7 +159,7 @@ public class EmailServiceImpl {
 
             mail.addPersonalization(personalization);
 
-            SendGrid sg = new SendGrid(sendGridApiKey);
+            SendGrid sg = new SendGrid(Utils.base64Decode(emailApiKey));
             Request request = new Request();
 
             try {
