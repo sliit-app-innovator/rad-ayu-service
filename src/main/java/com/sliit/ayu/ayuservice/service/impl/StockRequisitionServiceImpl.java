@@ -1,5 +1,6 @@
 package com.sliit.ayu.ayuservice.service.impl;
 
+import com.sliit.ayu.ayuservice.dto.StockRequestDTO;
 import com.sliit.ayu.ayuservice.utils.Utils;
 import com.sliit.ayu.ayuservice.constants.ErrorCode;
 import com.sliit.ayu.ayuservice.constants.OrderStatus;
@@ -11,13 +12,18 @@ import com.sliit.ayu.ayuservice.repository.StockRequisitionItemRepository;
 import com.sliit.ayu.ayuservice.repository.StockRequisitionRepository;
 import com.sliit.ayu.ayuservice.service.StockRequisitionService;
 import jakarta.transaction.Transactional;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class StockRequisitionServiceImpl implements StockRequisitionService {
+
+    @Autowired
+    private ModelMapper modelMapper;
 
     private StockRequisitionRepository stockRequisitionRepository;
     private StockRequisitionItemRepository stockRequisitionItemRepository;
@@ -139,5 +145,10 @@ public class StockRequisitionServiceImpl implements StockRequisitionService {
         } else {
             throw AyuException.builder().errorCode(ErrorCode.AU_001.getCode()).errorMessage(ErrorCode.AU_001.getMessage()).build();
         }
+    }
+
+    @Override
+    public List<StockRequestDTO> getPendingRequests() {
+       return stockRequisitionRepository.getRequestByStatusId(1).stream().map(StockRequestDTO::new).collect(Collectors.toList());
     }
 }

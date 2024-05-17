@@ -36,4 +36,8 @@ public interface StockRequisitionRepository extends JpaRepository<StockRequisiti
         @Transactional
         @Query(value =DbQuery.GET_RE_ORDER_LEVELS, nativeQuery = true)
         List<Object[]> getReorderLevels();
+
+        @Transactional
+        @Query(value =DbQuery.GET_REQUESTS_BY_ID, nativeQuery = true)
+        List<StockRequisitionEntity> getRequestByStatusId(int id);
 }

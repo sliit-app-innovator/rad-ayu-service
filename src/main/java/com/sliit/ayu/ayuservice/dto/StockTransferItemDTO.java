@@ -28,6 +28,8 @@ public class StockTransferItemDTO {
     @JsonProperty("updated_date")
     private Date updatedDate;
 
+
+
     public StockTransferItemEntity toEntity(){
         ModelMapper modelMapper = new ModelMapper();
         StockTransferItemEntity entity = new StockTransferItemEntity();

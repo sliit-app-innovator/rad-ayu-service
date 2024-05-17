@@ -2,6 +2,7 @@ package com.sliit.ayu.ayuservice.controller;
 
 import com.sliit.ayu.ayuservice.constants.Constants;
 import com.sliit.ayu.ayuservice.dto.*;
+import com.sliit.ayu.ayuservice.security.JwtUtil;
 import com.sliit.ayu.ayuservice.service.StockRequisitionService;
 
 
@@ -26,10 +27,13 @@ public class StockRequisitionController {
     @Autowired
     private StockRequisitionService stockRequisitionService;
 
+    @Autowired
+    private JwtUtil jwtUtil;
 
     @PostMapping("/stock-requisition")
-    public ResponseEntity<StockRequisitionDTO> addStockRequisition(@Valid @RequestBody StockRequisitionDTO stockRequisitionDTO, @RequestHeader Map<String, String> headers){
+    public ResponseEntity<StockRequisitionDTO> addStockRequisition(@Valid @RequestBody StockRequisitionDTO stockRequisitionDTO, @RequestHeader Map<String, String> headers , @RequestHeader("Authorization") String token){
         log.info("User creation request correlation-id : {}", headers.get(Constants.HEADER_CORRELATION_ID));
+        stockRequisitionDTO.setRequestedBy(jwtUtil.extractUsername(token.substring(7)));
         return ResponseEntity.status(HttpStatus.CREATED).body(stockRequisitionService.requestStockRequisition(stockRequisitionDTO));
     }
 
@@ -58,5 +62,11 @@ public class StockRequisitionController {
         log.info("User delete request correlation-id : {}", headers.get(Constants.HEADER_CORRELATION_ID));
         stockRequisitionService.deleteStockRequisitionRequest(id);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+    }
+
+    @GetMapping("/stock-requisition/get-pending-requests")
+    public ResponseEntity<List<StockRequestDTO>> getPendingRequests(@RequestHeader Map<String, String> headers){
+        log.info("pending request request correlation-id : {}", headers.get(Constants.HEADER_CORRELATION_ID));
+        return ResponseEntity.status(HttpStatus.OK).body(stockRequisitionService.getPendingRequests());
     }
 }

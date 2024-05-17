@@ -51,4 +51,6 @@ public class DbQuery {
     public static final String GET_MEDICINE_MOVEMENT="CALL get_medicines_movement_by_id(:medicineId)";
     public static final String GET_STOCK_REQS_BY_STATUS="SELECT count(*) as total , (select count(*) from stock_requisition where status_id=0) as pending FROM stock_requisition;";
     public static final String GET_RE_ORDER_LEVELS="select count(id) as pending_reorder,(select count(*) from medicine ) as total_items  from medicine where get_stock_by_item(id,null) < reorder_level";
+    public static final String GET_REQUESTS_BY_ID="SELECT * FROM stock_requisition where status_id = :id";
+
 }
