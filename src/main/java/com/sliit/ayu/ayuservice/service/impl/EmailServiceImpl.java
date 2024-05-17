@@ -28,8 +28,11 @@ public class EmailServiceImpl {
     @Value("${admin.notification.email}")
     private String sender;
 
-    @Value("${email.api.key}")
-    private String sendGridApiKey;
+    @Value("${email.api.key1}")
+    private String sendGridApiKey1;
+
+    @Value("${email.api.key2}")
+    private String sendGridApiKey2;
 
     @Value("${sendgrid.api.new.user.template}")
     private String newUserTemplate;
@@ -59,7 +62,7 @@ public class EmailServiceImpl {
 
             mail.addPersonalization(personalization);
 
-            SendGrid sg = new SendGrid(sendGridApiKey);
+            SendGrid sg = new SendGrid(sendGridApiKey1 + sendGridApiKey2);
             Request request = new Request();
 
             try {
@@ -92,7 +95,7 @@ public class EmailServiceImpl {
 
             mail.addPersonalization(personalization);
 
-            SendGrid sg = new SendGrid(sendGridApiKey);
+            SendGrid sg = new SendGrid(sendGridApiKey1 + sendGridApiKey2);
             Request request = new Request();
 
             try {
@@ -125,7 +128,7 @@ public class EmailServiceImpl {
 
             mail.addPersonalization(personalization);
 
-            SendGrid sg = new SendGrid(sendGridApiKey);
+            SendGrid sg = new SendGrid(sendGridApiKey1 + sendGridApiKey2);
             Request request = new Request();
 
             try {
@@ -158,7 +161,7 @@ public class EmailServiceImpl {
 
             mail.addPersonalization(personalization);
 
-            SendGrid sg = new SendGrid(sendGridApiKey);
+            SendGrid sg = new SendGrid(sendGridApiKey1 + sendGridApiKey2);
             Request request = new Request();
 
             try {
