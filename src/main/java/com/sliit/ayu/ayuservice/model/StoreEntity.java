@@ -39,7 +39,7 @@ public class StoreEntity {
     public StoreDTO toDTO() {
         StoreDTO storeDTO = new StoreDTO();
         storeDTO.setId(this.id);
-        storeDTO.setType(this.id);
+        storeDTO.setType(this.type);
         storeDTO.setName(this.name);
         storeDTO.setCreatedDate(this.createdDate);
         storeDTO.setUpdatedDate(this.updatedDate);
