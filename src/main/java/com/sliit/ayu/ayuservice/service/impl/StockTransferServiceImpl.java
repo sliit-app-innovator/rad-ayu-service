@@ -88,9 +88,10 @@ public class StockTransferServiceImpl implements StockTransferService {
                     medicineMovementEntity.setMedicineId(item.getMedicineId());
                     medicineMovementEntity.setStoreId(stockTransferDTO.getToStore());
                     medicineMovementEntity.setInQty(lot.getIssueQty());
-                    medicineMovementEntity.setDescription("STOCK_RETRIEVE");
-                    medicineMovementEntity.setReferenceId(item.getId());
-                    medicineMovementEntity.setLotId(Boolean.TRUE.equals(item.getIsLot()) ? lot.getId() : 0);
+                    medicineMovementEntity.setOutQty(0);
+                    medicineMovementEntity.setDescription("STOCK_TRANSFER");
+                    medicineMovementEntity.setReferenceId(transferId);
+                    medicineMovementEntity.setLotId(Boolean.TRUE.equals(item.getIsLot()) ? lot.getLotId() : 0);
                     medicineMovementEntity.setCreatedDate(Calendar.getInstance().getTime());
                     medicineMovementEntity.setUpdatedDate(Calendar.getInstance().getTime());
                     medicineMovementRepository.save(medicineMovementEntity);
@@ -100,9 +101,10 @@ public class StockTransferServiceImpl implements StockTransferService {
                     medicineMovementEntity.setMedicineId(item.getMedicineId());
                     medicineMovementEntity.setStoreId(stockTransferDTO.getFromStore());
                     medicineMovementEntity.setOutQty(lot.getIssueQty());
-                    medicineMovementEntity.setReferenceId(item.getId());
+                    medicineMovementEntity.setInQty(0);
+                    medicineMovementEntity.setReferenceId(transferId);
                     medicineMovementEntity.setDescription("STOCK_TRANSFER");
-                    medicineMovementEntity.setLotId(Boolean.TRUE.equals(item.getIsLot()) ? lot.getId() : 0);
+                    medicineMovementEntity.setLotId(Boolean.TRUE.equals(item.getIsLot()) ? lot.getLotId() : 0);
                     medicineMovementEntity.setCreatedDate(Calendar.getInstance().getTime());
                     medicineMovementEntity.setUpdatedDate(Calendar.getInstance().getTime());
                     medicineMovementRepository.save(medicineMovementEntity);
