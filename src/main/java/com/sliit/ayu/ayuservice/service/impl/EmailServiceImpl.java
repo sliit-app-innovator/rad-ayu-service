@@ -28,7 +28,7 @@ public class EmailServiceImpl {
     @Value("${admin.notification.email}")
     private String sender;
 
-    @Value("${sendgrid.api.key}")
+    @Value("${email.api.key}")
     private String sendGridApiKey;
 
     @Value("${sendgrid.api.new.user.template}")
