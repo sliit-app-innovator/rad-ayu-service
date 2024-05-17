@@ -89,6 +89,7 @@ public class StockTransferServiceImpl implements StockTransferService {
                     medicineMovementEntity.setStoreId(stockTransferDTO.getToStore());
                     medicineMovementEntity.setInQty(lot.getIssueQty());
                     medicineMovementEntity.setDescription("STOCK_RETRIEVE");
+                    medicineMovementEntity.setReferenceId(item.getId());
                     medicineMovementEntity.setLotId(Boolean.TRUE.equals(item.getIsLot()) ? lot.getId() : 0);
                     medicineMovementEntity.setCreatedDate(Calendar.getInstance().getTime());
                     medicineMovementEntity.setUpdatedDate(Calendar.getInstance().getTime());
@@ -99,6 +100,7 @@ public class StockTransferServiceImpl implements StockTransferService {
                     medicineMovementEntity.setMedicineId(item.getMedicineId());
                     medicineMovementEntity.setStoreId(stockTransferDTO.getFromStore());
                     medicineMovementEntity.setOutQty(lot.getIssueQty());
+                    medicineMovementEntity.setReferenceId(item.getId());
                     medicineMovementEntity.setDescription("STOCK_TRANSFER");
                     medicineMovementEntity.setLotId(Boolean.TRUE.equals(item.getIsLot()) ? lot.getId() : 0);
                     medicineMovementEntity.setCreatedDate(Calendar.getInstance().getTime());
