@@ -50,6 +50,9 @@ public class UserEntity {
     @Column(nullable = false)
     private String password;
 
+    @Column(unique = true ,nullable = false)
+    private String email;
+
     public UserDTO toDTO() {
         UserDTO userDTO = new UserDTO();
         userDTO.setId(this.id);
@@ -62,6 +65,7 @@ public class UserEntity {
         userDTO.setCreatedDate(this.createdDate);
         userDTO.setUpdatedDate(this.updatedDate);
         userDTO.setUsername(this.username);
+        userDTO.setEmail(this.email);
         userDTO.setEmployeeNumber(this.employeeNumber);
         userDTO.setPassword(this.password);
         return userDTO;

@@ -1,5 +1,11 @@
 package com.sliit.ayu.ayuservice.service.impl;
 
+import com.sliit.ayu.ayuservice.dto.UserDTO;
+import com.sliit.ayu.ayuservice.model.StockRequisitionItemEntity;
+import com.sliit.ayu.ayuservice.model.UserEntity;
+import com.sliit.ayu.ayuservice.repository.MedicineRepository;
+import com.sliit.ayu.ayuservice.repository.UserRepository;
+import com.sliit.ayu.ayuservice.dto.StockRequestDTO;
 import com.sliit.ayu.ayuservice.utils.Utils;
 import com.sliit.ayu.ayuservice.constants.ErrorCode;
 import com.sliit.ayu.ayuservice.constants.OrderStatus;
@@ -11,21 +17,35 @@ import com.sliit.ayu.ayuservice.repository.StockRequisitionItemRepository;
 import com.sliit.ayu.ayuservice.repository.StockRequisitionRepository;
 import com.sliit.ayu.ayuservice.service.StockRequisitionService;
 import jakarta.transaction.Transactional;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class StockRequisitionServiceImpl implements StockRequisitionService {
 
+    @Autowired
+    private MedicineRepository medicineRepository;
+    @Autowired
+    private ModelMapper modelMapper;
+
     private StockRequisitionRepository stockRequisitionRepository;
     private StockRequisitionItemRepository stockRequisitionItemRepository;
+    private UserRepository userRepository;
+    private EmailServiceImpl emailService;
 
     @Autowired
-    public StockRequisitionServiceImpl(StockRequisitionRepository stockRequisitionRepository, StockRequisitionItemRepository stockRequisitionItemRepository) {
+    public StockRequisitionServiceImpl(StockRequisitionRepository stockRequisitionRepository,
+                                       StockRequisitionItemRepository stockRequisitionItemRepository,
+                                       EmailServiceImpl emailService,
+                                       UserRepository userRepository) {
         this.stockRequisitionRepository = stockRequisitionRepository;
         this.stockRequisitionItemRepository = stockRequisitionItemRepository;
+        this.userRepository = userRepository;
+        this.emailService = emailService;
     }
 
     @Override
@@ -54,6 +74,10 @@ public class StockRequisitionServiceImpl implements StockRequisitionService {
                 stockRequisitionItemRepository.save(item.toEntity());
                 requisitionItemDTOS.add(stockRequisitionItemRepository.getByRequisitionIdAndMedicineId(requisitionId, item.getMedicineId()).toDTO());
             });
+            UserEntity user = userRepository.findByUsername(stockRequisitionDTO.getRequestedBy());
+            if (user != null) {
+                emailService.sendOrderReq(user.toDTO(), stockRequisitionDTO);
+            }
             stockRequisitionResponseDTO.setItems(requisitionItemDTOS);
             return stockRequisitionResponseDTO;
         }
@@ -78,7 +102,12 @@ public class StockRequisitionServiceImpl implements StockRequisitionService {
     public StockRequisitionDTO getStockRequisitionRequest(int id) {
         Optional<StockRequisitionEntity> optional = stockRequisitionRepository.findById(id);
         if(optional.isPresent()){
-            return optional.get().toDTO();
+            StockRequisitionDTO requisitionDTO = optional.get().toDTO();
+            requisitionDTO.setItems(stockRequisitionItemRepository.findAllByStockRequisitionId(id).stream().map(StockRequisitionItemEntity::toDTO).collect(Collectors.toList()));
+            requisitionDTO.getItems().stream().forEach(item -> {
+                item.setName(medicineRepository.findById(item.getMedicineId()).get().getName());
+            });
+            return requisitionDTO;
         } else {
             throw AyuException.builder().errorCode(ErrorCode.AU_001.getCode()).errorMessage(ErrorCode.AU_001.getMessage()).build();
         }
@@ -139,5 +168,10 @@ public class StockRequisitionServiceImpl implements StockRequisitionService {
         } else {
             throw AyuException.builder().errorCode(ErrorCode.AU_001.getCode()).errorMessage(ErrorCode.AU_001.getMessage()).build();
         }
+    }
+
+    @Override
+    public List<StockRequestDTO> getPendingRequests() {
+       return stockRequisitionRepository.getRequestByStatusId(1).stream().map(StockRequestDTO::new).collect(Collectors.toList());
     }
 }

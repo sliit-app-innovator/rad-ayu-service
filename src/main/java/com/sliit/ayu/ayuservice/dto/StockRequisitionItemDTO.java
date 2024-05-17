@@ -27,6 +27,9 @@ public class StockRequisitionItemDTO {
     @JsonProperty("updated_date")
     private Date updatedDate;
 
+    @JsonProperty("name")
+    private String name;
+
     public StockRequisitionItemEntity toEntity(){
         ModelMapper modelMapper = new ModelMapper();
         StockRequisitionItemEntity entity = new StockRequisitionItemEntity();

@@ -7,6 +7,7 @@ import lombok.Data;
 import org.modelmapper.ModelMapper;
 
 import java.util.Date;
+import java.util.List;
 
 @Data
 public class StockTransferItemDTO {
@@ -22,11 +23,18 @@ public class StockTransferItemDTO {
     @JsonProperty("qty")
     private Integer qty;
 
+    @JsonProperty("is_lot")
+    private Boolean isLot;
+
+    private List<TransferLotDTO> lots;
+
     @JsonProperty("created_date")
     private Date createdDate;
 
     @JsonProperty("updated_date")
     private Date updatedDate;
+
+
 
     public StockTransferItemEntity toEntity(){
         ModelMapper modelMapper = new ModelMapper();

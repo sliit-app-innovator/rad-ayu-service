@@ -54,6 +54,8 @@ public class UserDTO {
     @NotEmpty(message = "password cannot be null")
     private String password;
 
+    private String email;
+
     private  Integer departmentId;
 
     @JsonProperty("created_date")
@@ -68,6 +70,7 @@ public class UserDTO {
         userEntity.setLastName(this.lastName);
         userEntity.setTitle(this.title);
         userEntity.setDesignation(this.designation);
+        userEntity.setEmail(this.email);
         userEntity.setUserRole(this.userRole);
         userEntity.setDepartmentId(this.departmentId);
         userEntity.setEmployeeNumber(this.employeeNumber);

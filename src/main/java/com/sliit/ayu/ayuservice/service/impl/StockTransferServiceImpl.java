@@ -1,15 +1,14 @@
 package com.sliit.ayu.ayuservice.service.impl;
 
+import com.sliit.ayu.ayuservice.dto.UserDTO;
+import com.sliit.ayu.ayuservice.model.*;
+import com.sliit.ayu.ayuservice.repository.*;
 import com.sliit.ayu.ayuservice.utils.Utils;
 import com.sliit.ayu.ayuservice.constants.ErrorCode;
 import com.sliit.ayu.ayuservice.constants.OrderStatus;
 import com.sliit.ayu.ayuservice.dto.StockTransferDTO;
 import com.sliit.ayu.ayuservice.dto.StockTransferItemDTO;
 import com.sliit.ayu.ayuservice.execption.AyuException;
-import com.sliit.ayu.ayuservice.model.StockTransferEntity;
-import com.sliit.ayu.ayuservice.model.StockTransferItemEntity;
-import com.sliit.ayu.ayuservice.repository.StockTransferDetailRepository;
-import com.sliit.ayu.ayuservice.repository.StockTransferRepository;
 import com.sliit.ayu.ayuservice.service.StockTransferService;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,21 +23,43 @@ import java.util.Optional;
 public class StockTransferServiceImpl implements StockTransferService {
 
     StockTransferRepository stockTransferRepository;
+    StockRequisitionRepository stockRequisitionRepository;
     StockTransferDetailRepository stockTransferDetailRepository;
+    private MedicineMovementRepository medicineMovementRepository;
+    private UserRepository userRepository;
+    private EmailServiceImpl emailService;
 
     @Autowired
-    public StockTransferServiceImpl(StockTransferRepository stockTransferRepository, StockTransferDetailRepository stockTransferDetailRepository) {
+    public StockTransferServiceImpl(StockTransferRepository stockTransferRepository,
+                                    StockTransferDetailRepository stockTransferDetailRepository,
+                                    EmailServiceImpl emailService,
+                                    UserRepository userRepository,
+                                    MedicineMovementRepository medicineMovementRepository,
+                                    StockRequisitionRepository stockRequisitionRepository) {
         this.stockTransferRepository = stockTransferRepository;
         this.stockTransferDetailRepository = stockTransferDetailRepository;
+        this.userRepository = userRepository;
+        this.emailService = emailService;
+        this.medicineMovementRepository = medicineMovementRepository;
+        this.stockRequisitionRepository = stockRequisitionRepository;
     }
 
 
     @Override
     @Transactional(Transactional.TxType.REQUIRES_NEW)
     public StockTransferDTO requestStockTransfer(StockTransferDTO stockTransferDTO) {
-        if (!(stockTransferDTO.getStatus().equalsIgnoreCase(OrderStatus.ACCEPTED.name())
-                || stockTransferDTO.getStatus().equalsIgnoreCase(OrderStatus.PARTIALLY_ACCEPTED.name())
-                    || stockTransferDTO.getStatus().equalsIgnoreCase(OrderStatus.REJECTED.name()))) {
+        StockRequisitionEntity stockRequisitionEntity = null;
+        if (stockTransferDTO.getOrderId() != null && stockTransferDTO.getOrderId() != 0) {
+            stockRequisitionEntity  = stockRequisitionRepository.findById(stockTransferDTO.getOrderId()).orElse(null);
+        }
+
+        if (stockRequisitionEntity != null && stockRequisitionEntity.getStatusId() ==OrderStatus.ACCEPTED.getId()) {
+            throw AyuException.builder().errorCode(ErrorCode.AU_003.getCode()).errorMessage(ErrorCode.AU_003.getMessage()).build();
+        }
+
+        if (!(stockTransferDTO.getStatus().equalsIgnoreCase(OrderStatus.NEW.name())
+                /*|| stockTransferDTO.getStatus().equalsIgnoreCase(OrderStatus.PARTIALLY_ACCEPTED.name())
+                    || stockTransferDTO.getStatus().equalsIgnoreCase(OrderStatus.REJECTED.name())*/)) {
             throw AyuException.builder().errorCode(ErrorCode.AU_003.getCode()).errorMessage(ErrorCode.AU_003.getMessage()).build();
         } else if(stockTransferDTO.getItems().isEmpty()) {
             throw AyuException.builder().errorCode(ErrorCode.AU_004.getCode()).errorMessage(ErrorCode.AU_004.getMessage()).build();
@@ -60,8 +81,45 @@ public class StockTransferServiceImpl implements StockTransferService {
                 item.setUpdatedDate(Calendar.getInstance().getTime());
                 stockTransferDetailRepository.save(item.toEntity());
                 transferItemDTOS.add(stockTransferDetailRepository.getByTransferIdAndMedicineId(transferId, item.getMedicineId()).toDTO());
+
+                item.getLots().forEach(lot -> {
+                    // IN
+                    MedicineMovementEntity medicineMovementEntity = new MedicineMovementEntity();
+                    medicineMovementEntity.setMedicineId(item.getMedicineId());
+                    medicineMovementEntity.setStoreId(stockTransferDTO.getToStore());
+                    medicineMovementEntity.setInQty(lot.getIssueQty());
+                    medicineMovementEntity.setDescription("STOCK_RETRIEVE");
+                    medicineMovementEntity.setReferenceId(item.getId());
+                    medicineMovementEntity.setLotId(Boolean.TRUE.equals(item.getIsLot()) ? lot.getId() : 0);
+                    medicineMovementEntity.setCreatedDate(Calendar.getInstance().getTime());
+                    medicineMovementEntity.setUpdatedDate(Calendar.getInstance().getTime());
+                    medicineMovementRepository.save(medicineMovementEntity);
+
+                    // OUT
+                    medicineMovementEntity = new MedicineMovementEntity();
+                    medicineMovementEntity.setMedicineId(item.getMedicineId());
+                    medicineMovementEntity.setStoreId(stockTransferDTO.getFromStore());
+                    medicineMovementEntity.setOutQty(lot.getIssueQty());
+                    medicineMovementEntity.setReferenceId(item.getId());
+                    medicineMovementEntity.setDescription("STOCK_TRANSFER");
+                    medicineMovementEntity.setLotId(Boolean.TRUE.equals(item.getIsLot()) ? lot.getId() : 0);
+                    medicineMovementEntity.setCreatedDate(Calendar.getInstance().getTime());
+                    medicineMovementEntity.setUpdatedDate(Calendar.getInstance().getTime());
+                    medicineMovementRepository.save(medicineMovementEntity);
+                });
             });
+
+            if (stockRequisitionEntity != null) {
+                stockRequisitionEntity.setStatusId(OrderStatus.ACCEPTED.getId());
+                stockRequisitionRepository.save(stockRequisitionEntity);
+            }
+
             stockTransferResponseDTO.setItems(transferItemDTOS);
+            UserEntity user = userRepository.findByUsername(stockTransferDTO.getRequestedBy());
+            if (user != null) {
+                emailService.sendOrderComplete(user.toDTO(), stockTransferDTO);
+            }
+
             return stockTransferResponseDTO;
         }
     }
