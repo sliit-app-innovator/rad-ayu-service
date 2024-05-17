@@ -21,6 +21,9 @@ public class UserServiceImpl implements UserService  {
     @Autowired
     private UserRepository userRepository;
 
+    @Autowired
+    private EmailServiceImpl emailService;
+
     @Override
     public UserDTO addUser(UserDTO userDTO) {
         userDTO.setCreatedDate(Calendar.getInstance().getTime());
@@ -28,6 +31,8 @@ public class UserServiceImpl implements UserService  {
         userDTO.setPassword(passwordEncoder.encode(userDTO.getPassword()));
         userRepository.save(userDTO.toEntity());
         UserEntity userEntity = userRepository.findByEmployeeNumber(userDTO.getEmployeeNumber());
+
+        emailService.sendNewUserCreation(userEntity.toDTO());
         return userEntity.toDTO();
     }
 

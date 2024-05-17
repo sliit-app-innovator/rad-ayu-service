@@ -19,10 +19,8 @@ public class EmailController {
     @GetMapping("/send-email")
     public String sendEmail() {
         try {
-            emailService.sendEmail("damith.gg@gmail.com", "SUBJECT", "Test content");
+         //   emailService.sendNewUserCreation("damith.gg@gmail.com", null);
             return "Email sent successfully!";
-        } catch (IOException e) {
-            return "Failed to send email.";
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
