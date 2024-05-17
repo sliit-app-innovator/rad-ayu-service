@@ -56,7 +56,8 @@ public class StoreServiceImpl implements StoreService {
         if (StringUtils.hasText(storeDTO.getName())) {
             storeEntity.setName(storeDTO.getName());
         }
-        return storeRepository.save(storeEntity).toDTO();
+        storeEntity.setType(storeDTO.getType());
+        return storeRepository.saveAndFlush(storeEntity).toDTO();
     }
 
     @Override
