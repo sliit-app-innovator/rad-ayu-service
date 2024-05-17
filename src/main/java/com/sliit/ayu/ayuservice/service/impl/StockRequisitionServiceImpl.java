@@ -1,7 +1,9 @@
 package com.sliit.ayu.ayuservice.service.impl;
 
 import com.sliit.ayu.ayuservice.dto.UserDTO;
+import com.sliit.ayu.ayuservice.model.StockRequisitionItemEntity;
 import com.sliit.ayu.ayuservice.model.UserEntity;
+import com.sliit.ayu.ayuservice.repository.MedicineRepository;
 import com.sliit.ayu.ayuservice.repository.UserRepository;
 import com.sliit.ayu.ayuservice.dto.StockRequestDTO;
 import com.sliit.ayu.ayuservice.utils.Utils;
@@ -25,6 +27,8 @@ import java.util.stream.Collectors;
 @Service
 public class StockRequisitionServiceImpl implements StockRequisitionService {
 
+    @Autowired
+    private MedicineRepository medicineRepository;
     @Autowired
     private ModelMapper modelMapper;
 
@@ -96,7 +100,12 @@ public class StockRequisitionServiceImpl implements StockRequisitionService {
     public StockRequisitionDTO getStockRequisitionRequest(int id) {
         Optional<StockRequisitionEntity> optional = stockRequisitionRepository.findById(id);
         if(optional.isPresent()){
-            return optional.get().toDTO();
+            StockRequisitionDTO requisitionDTO = optional.get().toDTO();
+            requisitionDTO.setItems(stockRequisitionItemRepository.findAllByStockRequisitionId(id).stream().map(StockRequisitionItemEntity::toDTO).collect(Collectors.toList()));
+            requisitionDTO.getItems().stream().forEach(item -> {
+                item.setName(medicineRepository.findById(item.getMedicineId()).get().getName());
+            });
+            return requisitionDTO;
         } else {
             throw AyuException.builder().errorCode(ErrorCode.AU_001.getCode()).errorMessage(ErrorCode.AU_001.getMessage()).build();
         }

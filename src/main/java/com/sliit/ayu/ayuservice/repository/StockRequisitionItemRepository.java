@@ -27,4 +27,8 @@ public interface StockRequisitionItemRepository extends JpaRepository<StockRequi
         @Modifying
         @Query(value =DbQuery.DELETE_ALL_STOCK_REQUISITION_ITEMS_BY_REQUISITION_ID, nativeQuery = true)
         void deleteByRequisitionId(int requisitionId);
+
+        @Modifying
+        @Query(value =DbQuery.FIN_ALL_ITEMS_BY_REQUEST_ID, nativeQuery = true)
+        List<StockRequisitionItemEntity> findAllByStockRequisitionId(int id);
 }

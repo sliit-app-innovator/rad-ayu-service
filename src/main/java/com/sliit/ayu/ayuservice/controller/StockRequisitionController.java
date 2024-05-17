@@ -64,7 +64,7 @@ public class StockRequisitionController {
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
-    @GetMapping("/stock-requisition/get-pending-requests")
+    @GetMapping("/get-pending-requests")
     public ResponseEntity<List<StockRequestDTO>> getPendingRequests(@RequestHeader Map<String, String> headers){
         log.info("pending request request correlation-id : {}", headers.get(Constants.HEADER_CORRELATION_ID));
         return ResponseEntity.status(HttpStatus.OK).body(stockRequisitionService.getPendingRequests());

@@ -49,8 +49,9 @@ public class DbQuery {
     public static final String GET_TOP_5_FAST_MOVING_MEDICINCES="SELECT medicine_id , (select name from medicine where id=md.medicine_id) as name,sum(qty) as issued FROM medicine_issue_details md group by medicine_id order by sum(qty) desc limit 5;";
     public static final String GET_TOP_5_EXPIRING_MEDICINES="SELECT medicine_id, (select name from medicine where id=medicine_movement.medicine_id) as name , count(out_qty) as expired FROM medicine_movement  where description='STOCK_EXPIRED' GROUP BY medicine_id order by count(out_qty) desc limit 5";
     public static final String GET_MEDICINE_MOVEMENT="CALL get_medicines_movement_by_id(:medicineId)";
-    public static final String GET_STOCK_REQS_BY_STATUS="SELECT count(*) as total , (select count(*) from stock_requisition where status_id=0) as pending FROM stock_requisition;";
+    public static final String GET_STOCK_REQS_BY_STATUS="SELECT count(*) as total , (select count(*) from stock_requisition where status_id=1) as pending FROM stock_requisition;";
     public static final String GET_RE_ORDER_LEVELS="select count(id) as pending_reorder,(select count(*) from medicine ) as total_items  from medicine where get_stock_by_item(id,null) < reorder_level";
     public static final String GET_REQUESTS_BY_ID="SELECT * FROM stock_requisition where status_id = :id";
+    public static final String FIN_ALL_ITEMS_BY_REQUEST_ID="SELECT * FROM stock_requisition_item where stock_requisition_id = :id";
 
 }
