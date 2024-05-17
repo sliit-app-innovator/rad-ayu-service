@@ -108,8 +108,10 @@ public class StockServiceImpl implements StockService {
         if(!medicineMovementList.isEmpty()){
             medicineMovementRepository.saveAll(medicineMovementList);
         }
-        UserDTO user = userRepository.findByUsername(stockRetrievalRequestDTO.getRequestBy()).toDTO();
-        emailService.newInventory(user, stockRetrievalRequestDTO);
+        UserEntity user = userRepository.findByUsername(stockRetrievalRequestDTO.getRequestBy());
+        if (user != null) {
+            emailService.newInventory(user.toDTO(), stockRetrievalRequestDTO);
+        }
         return new StockRetrievalResponseDTO(stockRetrieval.getId(),true);
     }
 

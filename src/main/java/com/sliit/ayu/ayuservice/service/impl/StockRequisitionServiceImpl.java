@@ -74,8 +74,10 @@ public class StockRequisitionServiceImpl implements StockRequisitionService {
                 stockRequisitionItemRepository.save(item.toEntity());
                 requisitionItemDTOS.add(stockRequisitionItemRepository.getByRequisitionIdAndMedicineId(requisitionId, item.getMedicineId()).toDTO());
             });
-            UserDTO user = userRepository.findByUsername(stockRequisitionDTO.getRequestedBy()).toDTO();
-            emailService.sendOrderReq(user, stockRequisitionDTO);
+            UserEntity user = userRepository.findByUsername(stockRequisitionDTO.getRequestedBy());
+            if (user != null) {
+                emailService.sendOrderReq(user.toDTO(), stockRequisitionDTO);
+            }
             stockRequisitionResponseDTO.setItems(requisitionItemDTOS);
             return stockRequisitionResponseDTO;
         }

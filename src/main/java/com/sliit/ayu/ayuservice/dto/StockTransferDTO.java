@@ -25,6 +25,9 @@ public class StockTransferDTO {
     @JsonProperty("reference")
     private String reference;
 
+    @JsonProperty("requestNo")
+    private Integer orderId;
+
     @JsonProperty("date")
     private Date date;
 
