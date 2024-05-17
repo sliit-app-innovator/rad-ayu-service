@@ -13,7 +13,7 @@ public class DashboardResponseDto {
 
     private List<MedicineStockAvailabilityResDTO> medicineStockChart;
     private List<Top5FastMovingItemsResDto> top5FastMovingMedicines;
-    private List<Top5FastMovingItemsResDto> top5ExpiringMedicines;
+    private List<Top5ExpiringItemsResDto> top5ExpiringMedicines;
     private List<MedicineMovementResDTO> medicineMovement;
 
 

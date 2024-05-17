@@ -29,7 +29,7 @@ public class DashboardServiceImpl implements DashboardService {
         List<Top5FastMovingItemsResDto> top5FastMovingItems = getTop5FastMovingItems();
         dashboardResponseDto.setTop5FastMovingMedicines(top5FastMovingItems);
 
-        List<Top5FastMovingItemsResDto> top5ExpiringItems = getTop5ExpiringItems();
+        List<Top5ExpiringItemsResDto> top5ExpiringItems = getTop5ExpiringItems();
         dashboardResponseDto.setTop5ExpiringMedicines(top5ExpiringItems);
 
         List<MedicineMovementResDTO> medicineMovementResDTO = getMedicineMovement(medicineId);
@@ -52,12 +52,14 @@ public class DashboardServiceImpl implements DashboardService {
         return  dashboardResponseDto;
     }
 
-    private List<Top5FastMovingItemsResDto> getTop5ExpiringItems() {
+    private List<Top5ExpiringItemsResDto> getTop5ExpiringItems() {
         List<Object[]> results = medicineMovementRepository.getTop5ExpiringItems();
-        return   results.stream().map(result -> new Top5FastMovingItemsResDto(
-                Integer.parseInt(result[0].toString()),
-                result[1].toString(),
-                Integer.parseInt(result[2].toString())
+        return   results.stream().map(result -> new Top5ExpiringItemsResDto(
+                result[0].toString(),
+                Integer.parseInt(result[2].toString()),
+                result[3].toString(),
+                Integer.parseInt(result[4].toString()),
+                result[5].toString()
         )).collect(Collectors.toList());
     }
 
